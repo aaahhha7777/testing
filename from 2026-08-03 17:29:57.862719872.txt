@@ -1,0 +1,1911 @@
+(pi-assistant-env) hacker@hacker:~/pi-assistant $ python3 -c "import openwakeword; print(openwakeword.__file__)"
+2026-08-03 16:11:27.880893542 [W:onnxruntime:Default, device_discovery.cc:285 GetGpuDevices] Failed to detect devices under "/sys/class/drm/card1": device_discovery.cc:94 ReadFileContents Failed to open file: "/sys/class/drm/card1/device/vendor"
+2026-08-03 16:11:27.881031597 [W:onnxruntime:Default, device_discovery.cc:285 GetGpuDevices] Failed to detect devices under "/sys/class/drm/card0": device_discovery.cc:94 ReadFileContents Failed to open file: "/sys/class/drm/card0/device/vendor"
+/home/hacker/pi-assistant-env/lib/python3.13/site-packages/openwakeword/__init__.py
+(pi-assistant-env) hacker@hacker:~/pi-assistant $ cat > wakeword.py << 'EOF'
+ config import MIC_DEVICE_INDEX
+
+# Locate the bundled pretrained model file inside the install> import sounddevice as sd
+ with sd.InputStream(samplerate=16000, channels=1, dt> import openwakeword
+e=CHU> from openwakeword.model import Model
+> from config import MIC_DEVICE_INDEX
+>
+> # Locate the bundled pretrained model file inside the installed package
+> _pkg_dir = openwakeword.__path__[0]
+> _MODEL_PATH = f"{_pkg_dir}/resources/models/hey_jarvis_v0.1.onnx"
+>
+> owwModel = Model(wakeword_model_paths=[_MODEL_PATH])
+>
+>
+> def listen_for_wakeword():
+>     """Blocks until the wake word is heard, then returns."""
+>     CHUNK = 1280
+>     with sd.InputStream(samplerate=16000, channels=1, dtype="int16",
+>                          blocksize=CHUNK, device=MIC_DEVICE_INDEX) as stream:
+>         print("Listening for wake word...")
+>         while True:
+>             audio, _ = stream.read(CHUNK)
+>             audio = audio.flatten()
+>             prediction = owwModel.predict(audio)
+>             for mdl, score in prediction.items():
+>                 if score > 0.5:
+>                     print(f"Wake word detected: {mdl} ({score:.2f})")
+>                     return
+> EOF
+(pi-assistant-env) hacker@hacker:~/pi-assistant $ python3 main.py
+2026-08-03 16:18:27.825124497 [W:onnxruntime:Default, device_discovery.cc:285 GetGpuDevices] Failed to detect devices under "/sys/class/drm/card1": device_discovery.cc:94 ReadFileContents Failed to open file: "/sys/class/drm/card1/device/vendor"
+2026-08-03 16:18:27.825263555 [W:onnxruntime:Default, device_discovery.cc:285 GetGpuDevices] Failed to detect devices under "/sys/class/drm/card0": device_discovery.cc:94 ReadFileContents Failed to open file: "/sys/class/drm/card0/device/vendor"
+/home/hacker/pi-assistant-env/lib/python3.13/site-packages/onnxruntime/capi/onnxruntime_inference_collection.py:153: UserWarning: Specified provider 'CUDAExecutionProvider' is not in available provider names.Available providers: 'AzureExecutionProvider, CPUExecutionProvider'
+  warnings.warn(
+Traceback (most recent call last):
+  File "/home/hacker/pi-assistant/main.py", line 2, in <module>
+    from listener import record_command
+  File "/home/hacker/pi-assistant/listener.py", line 3, in <module>
+    import webrtcvad
+  File "/home/hacker/pi-assistant-env/lib/python3.13/site-packages/webrtcvad.py", line 1, in <module>
+    import pkg_resources
+ModuleNotFoundError: No module named 'pkg_resources'
+(pi-assistant-env) hacker@hacker:~/pi-assistant $ pip install setuptools
+Looking in indexes: https://pypi.org/simple, https://www.piwheels.org/simple
+Collecting setuptools
+  Using cached setuptools-83.0.0-py3-none-any.whl.metadata (6.6 kB)
+Using cached setuptools-83.0.0-py3-none-any.whl (1.0 MB)
+Installing collected packages: setuptools
+Successfully installed setuptools-83.0.0
+(pi-assistant-env) hacker@hacker:~/pi-assistant $ python3 main.py
+2026-08-03 16:19:55.218591788 [W:onnxruntime:Default, device_discovery.cc:285 GetGpuDevices] Failed to detect devices under "/sys/class/drm/card1": device_discovery.cc:94 ReadFileContents Failed to open file: "/sys/class/drm/card1/device/vendor"
+2026-08-03 16:19:55.218724419 [W:onnxruntime:Default, device_discovery.cc:285 GetGpuDevices] Failed to detect devices under "/sys/class/drm/card0": device_discovery.cc:94 ReadFileContents Failed to open file: "/sys/class/drm/card0/device/vendor"
+/home/hacker/pi-assistant-env/lib/python3.13/site-packages/onnxruntime/capi/onnxruntime_inference_collection.py:153: UserWarning: Specified provider 'CUDAExecutionProvider' is not in available provider names.Available providers: 'AzureExecutionProvider, CPUExecutionProvider'
+  warnings.warn(
+Traceback (most recent call last):
+  File "/home/hacker/pi-assistant/main.py", line 2, in <module>
+    from listener import record_command
+  File "/home/hacker/pi-assistant/listener.py", line 3, in <module>
+    import webrtcvad
+  File "/home/hacker/pi-assistant-env/lib/python3.13/site-packages/webrtcvad.py", line 1, in <module>
+    import pkg_resources
+ModuleNotFoundError: No module named 'pkg_resources'
+(pi-assistant-env) hacker@hacker:~/pi-assistant $ pip show setuptools
+Name: setuptools
+Version: 83.0.0
+Summary: Most extensible Python build backend with support for C/C++ extension modules
+Home-page:
+Author:
+Author-email: Python Packaging Authority <distutils-sig@python.org>
+License-Expression: MIT
+Location: /home/hacker/pi-assistant-env/lib/python3.13/site-packages
+Requires:
+Required-by:
+(pi-assistant-env) hacker@hacker:~/pi-assistant $ pip install --force-reinstall setuptools
+Looking in indexes: https://pypi.org/simple, https://www.piwheels.org/simple
+Collecting setuptools
+  Using cached setuptools-83.0.0-py3-none-any.whl.metadata (6.6 kB)
+Using cached setuptools-83.0.0-py3-none-any.whl (1.0 MB)
+Installing collected packages: setuptools
+  Attempting uninstall: setuptools
+    Found existing installation: setuptools 83.0.0
+    Uninstalling setuptools-83.0.0:
+      Successfully uninstalled setuptools-83.0.0
+Successfully installed setuptools-83.0.0
+(pi-assistant-env) hacker@hacker:~/pi-assistant $ python3 -c "import pkg_resources; print('OK')"
+Traceback (most recent call last):
+  File "<string>", line 1, in <module>
+    import pkg_resources; print('OK')
+    ^^^^^^^^^^^^^^^^^^^^
+ModuleNotFoundError: No module named 'pkg_resources'
+(pi-assistant-env) hacker@hacker:~/pi-assistant $ pip install "setuptools<82"
+Looking in indexes: https://pypi.org/simple, https://www.piwheels.org/simple
+Collecting setuptools<82
+  Downloading setuptools-81.0.0-py3-none-any.whl.metadata (6.6 kB)
+Downloading setuptools-81.0.0-py3-none-any.whl (1.1 MB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 1.1/1.1 MB 1.3 MB/s  0:00:01
+Installing collected packages: setuptools
+  Attempting uninstall: setuptools
+    Found existing installation: setuptools 83.0.0
+    Uninstalling setuptools-83.0.0:
+      Successfully uninstalled setuptools-83.0.0
+Successfully installed setuptools-81.0.0
+(pi-assistant-env) hacker@hacker:~/pi-assistant $ python3 -c "import pkg_resources; print('OK')"
+<string>:1: UserWarning: pkg_resources is deprecated as an API. See https://setuptools.pypa.io/en/latest/pkg_resources.html. The pkg_resources package is slated for removal as early as 2025-11-30. Refrain from using this package or pin to Setuptools<81.
+OK
+(pi-assistant-env) hacker@hacker:~/pi-assistant $ python3 main.py
+2026-08-03 16:21:29.399496728 [W:onnxruntime:Default, device_discovery.cc:285 GetGpuDevices] Failed to detect devices under "/sys/class/drm/card1": device_discovery.cc:94 ReadFileContents Failed to open file: "/sys/class/drm/card1/device/vendor"
+2026-08-03 16:21:29.399631656 [W:onnxruntime:Default, device_discovery.cc:285 GetGpuDevices] Failed to detect devices under "/sys/class/drm/card0": device_discovery.cc:94 ReadFileContents Failed to open file: "/sys/class/drm/card0/device/vendor"
+/home/hacker/pi-assistant-env/lib/python3.13/site-packages/onnxruntime/capi/onnxruntime_inference_collection.py:153: UserWarning: Specified provider 'CUDAExecutionProvider' is not in available provider names.Available providers: 'AzureExecutionProvider, CPUExecutionProvider'
+  warnings.warn(
+/home/hacker/pi-assistant-env/lib/python3.13/site-packages/webrtcvad.py:1: UserWarning: pkg_resources is deprecated as an API. See https://setuptools.pypa.io/en/latest/pkg_resources.html. The pkg_resources package is slated for removal as early as 2025-11-30. Refrain from using this package or pin to Setuptools<81.
+  import pkg_resources
+/home/hacker/pi-assistant/brain.py:1: FutureWarning:
+
+All support for the `google.generativeai` package has ended. It will no longer be receiving
+updates or bug fixes. Please switch to the `google.genai` package as soon as possible.
+See README for more details:
+
+https://github.com/google-gemini/deprecated-generative-ai-python/blob/main/README.md
+
+  import google.generativeai as genai
+Assistant ready. Say the wake word to start.
+Listening for wake word...
+Wake word detected: hey_jarvis_v0.1 (0.99)
+Listening for your command...
+Error: <HttpError 400 when requesting https://generativelanguage.googleapis.com/$discovery/rest?version=v1beta&key=PASTE_YOUR_GEMINI_KEY_HERE returned "API key not valid. Please pass a valid API key.". Details: "[{'@type': 'type.googleapis.com/google.rpc.ErrorInfo', 'reason': 'API_KEY_INVALID', 'domain': 'googleapis.com', 'metadata': {'service': 'generativelanguage.googleapis.com'}}, {'@type': 'type.googleapis.com/google.rpc.LocalizedMessage', 'locale': 'en-US', 'message': 'API key not valid. Please pass a valid API key.'}]">
+Listening for wake word...
+Wake word detected: hey_jarvis_v0.1 (0.99)
+Listening for your command...
+Error: <HttpError 400 when requesting https://generativelanguage.googleapis.com/$discovery/rest?version=v1beta&key=PASTE_YOUR_GEMINI_KEY_HERE returned "API key not valid. Please pass a valid API key.". Details: "[{'@type': 'type.googleapis.com/google.rpc.ErrorInfo', 'reason': 'API_KEY_INVALID', 'domain': 'googleapis.com', 'metadata': {'service': 'generativelanguage.googleapis.com'}}, {'@type': 'type.googleapis.com/google.rpc.LocalizedMessage', 'locale': 'en-US', 'message': 'API key not valid. Please pass a valid API key.'}]">
+Listening for wake word...
+Wake word detected: hey_jarvis_v0.1 (0.97)
+Listening for your command...
+Error: <HttpError 400 when requesting https://generativelanguage.googleapis.com/$discovery/rest?version=v1beta&key=PASTE_YOUR_GEMINI_KEY_HERE returned "API key not valid. Please pass a valid API key.". Details: "[{'@type': 'type.googleapis.com/google.rpc.ErrorInfo', 'reason': 'API_KEY_INVALID', 'domain': 'googleapis.com', 'metadata': {'service': 'generativelanguage.googleapis.com'}}, {'@type': 'type.googleapis.com/google.rpc.LocalizedMessage', 'locale': 'en-US', 'message': 'API key not valid. Please pass a valid API key.'}]">
+Listening for wake word...
+Wake word detected: hey_jarvis_v0.1 (0.89)
+Listening for your command...
+Error: <HttpError 400 when requesting https://generativelanguage.googleapis.com/$discovery/rest?version=v1beta&key=PASTE_YOUR_GEMINI_KEY_HERE returned "API key not valid. Please pass a valid API key.". Details: "[{'@type': 'type.googleapis.com/google.rpc.ErrorInfo', 'reason': 'API_KEY_INVALID', 'domain': 'googleapis.com', 'metadata': {'service': 'generativelanguage.googleapis.com'}}, {'@type': 'type.googleapis.com/google.rpc.LocalizedMessage', 'locale': 'en-US', 'message': 'API key not valid. Please pass a valid API key.'}]">
+Listening for wake word...
+^CStopping assistant.
+(pi-assistant-env) hacker@hacker:~/pi-assistant $ nano config.py
+(pi-assistant-env) hacker@hacker:~/pi-assistant $ grep GEMINI_API_KEY config.py
+GEMINI_API_KEY = os.getenv("GEMINI_API_KEY", "AQ.Ab8RN6KBZ8rUtSKEv-y1AhbTXhCvQTo0OrUbtesQxdMklONHfQ")
+(pi-assistant-env) hacker@hacker:~/pi-assistant $ python3 main.py
+2026-08-03 16:25:37.390951637 [W:onnxruntime:Default, device_discovery.cc:285 GetGpuDevices] Failed to detect devices under "/sys/class/drm/card1": device_discovery.cc:94 ReadFileContents Failed to open file: "/sys/class/drm/card1/device/vendor"
+2026-08-03 16:25:37.391085983 [W:onnxruntime:Default, device_discovery.cc:285 GetGpuDevices] Failed to detect devices under "/sys/class/drm/card0": device_discovery.cc:94 ReadFileContents Failed to open file: "/sys/class/drm/card0/device/vendor"
+/home/hacker/pi-assistant-env/lib/python3.13/site-packages/onnxruntime/capi/onnxruntime_inference_collection.py:153: UserWarning: Specified provider 'CUDAExecutionProvider' is not in available provider names.Available providers: 'AzureExecutionProvider, CPUExecutionProvider'
+  warnings.warn(
+/home/hacker/pi-assistant-env/lib/python3.13/site-packages/webrtcvad.py:1: UserWarning: pkg_resources is deprecated as an API. See https://setuptools.pypa.io/en/latest/pkg_resources.html. The pkg_resources package is slated for removal as early as 2025-11-30. Refrain from using this package or pin to Setuptools<81.
+  import pkg_resources
+/home/hacker/pi-assistant/brain.py:1: FutureWarning:
+
+All support for the `google.generativeai` package has ended. It will no longer be receiving
+updates or bug fixes. Please switch to the `google.genai` package as soon as possible.
+See README for more details:
+
+https://github.com/google-gemini/deprecated-generative-ai-python/blob/main/README.md
+
+  import google.generativeai as genai
+Assistant ready. Say the wake word to start.
+Listening for wake word...
+Wake word detected: hey_jarvis_v0.1 (0.93)
+Listening for your command...
+Error: <HttpError 400 when requesting https://generativelanguage.googleapis.com/$discovery/rest?version=v1beta&key=AQ.Ab8RN6KBZ8rUtSKEv-y1AhbTXhCvQTo0OrUbtesQxdMklONHfQ returned "API key not valid. Please pass a valid API key.". Details: "[{'@type': 'type.googleapis.com/google.rpc.ErrorInfo', 'reason': 'API_KEY_INVALID', 'domain': 'googleapis.com', 'metadata': {'service': 'generativelanguage.googleapis.com'}}, {'@type': 'type.googleapis.com/google.rpc.LocalizedMessage', 'locale': 'en-US', 'message': 'API key not valid. Please pass a valid API key.'}]">
+Listening for wake word...
+Wake word detected: hey_jarvis_v0.1 (0.99)
+Listening for your command...
+Error: <HttpError 400 when requesting https://generativelanguage.googleapis.com/$discovery/rest?version=v1beta&key=AQ.Ab8RN6KBZ8rUtSKEv-y1AhbTXhCvQTo0OrUbtesQxdMklONHfQ returned "API key not valid. Please pass a valid API key.". Details: "[{'@type': 'type.googleapis.com/google.rpc.ErrorInfo', 'reason': 'API_KEY_INVALID', 'domain': 'googleapis.com', 'metadata': {'service': 'generativelanguage.googleapis.com'}}, {'@type': 'type.googleapis.com/google.rpc.LocalizedMessage', 'locale': 'en-US', 'message': 'API key not valid. Please pass a valid API key.'}]">
+Listening for wake word...
+Wake word detected: hey_jarvis_v0.1 (0.98)
+Listening for your command...
+Error: <HttpError 400 when requesting https://generativelanguage.googleapis.com/$discovery/rest?version=v1beta&key=AQ.Ab8RN6KBZ8rUtSKEv-y1AhbTXhCvQTo0OrUbtesQxdMklONHfQ returned "API key not valid. Please pass a valid API key.". Details: "[{'@type': 'type.googleapis.com/google.rpc.ErrorInfo', 'reason': 'API_KEY_INVALID', 'domain': 'googleapis.com', 'metadata': {'service': 'generativelanguage.googleapis.com'}}, {'@type': 'type.googleapis.com/google.rpc.LocalizedMessage', 'locale': 'en-US', 'message': 'API key not valid. Please pass a valid API key.'}]">
+Listening for wake word...
+Wake word detected: hey_jarvis_v0.1 (0.96)
+Listening for your command...
+^CStopping assistant.
+(pi-assistant-env) hacker@hacker:~/pi-assistant $ pip install google-genai
+Looking in indexes: https://pypi.org/simple, https://www.piwheels.org/simple
+Collecting google-genai
+  Downloading google_genai-2.16.0-py3-none-any.whl.metadata (56 kB)
+Collecting anyio<5.0.0,>=4.8.0 (from google-genai)
+  Downloading anyio-4.14.2-py3-none-any.whl.metadata (4.6 kB)
+Requirement already satisfied: google-auth<3.0.0,>=2.56.0 in /home/hacker/pi-assistant-env/lib/python3.13/site-packages (from google-auth[requests]<3.0.0,>=2.56.0->google-genai) (2.56.2)
+Collecting httpx<1.0.0,>=0.28.1 (from google-genai)
+  Downloading httpx-0.28.1-py3-none-any.whl.metadata (7.1 kB)
+Requirement already satisfied: pydantic<3.0.0,>=2.12.5 in /home/hacker/pi-assistant-env/lib/python3.13/site-packages (from google-genai) (2.13.4)
+Requirement already satisfied: requests<3.0.0,>=2.28.1 in /home/hacker/pi-assistant-env/lib/python3.13/site-packages (from google-genai) (2.34.2)
+Collecting tenacity<9.2.0,>=8.2.3 (from google-genai)
+  Downloading tenacity-9.1.4-py3-none-any.whl.metadata (1.2 kB)
+Collecting websockets<17.0,>=13.0.0 (from google-genai)
+  Downloading websockets-16.1.1-cp313-cp313-manylinux2014_aarch64.manylinux_2_17_aarch64.manylinux_2_28_aarch64.whl.metadata (6.8 kB)
+Requirement already satisfied: typing-extensions<5.0.0,>=4.14.0 in /home/hacker/pi-assistant-env/lib/python3.13/site-packages (from google-genai) (4.16.0)
+Collecting distro<2,>=1.7.0 (from google-genai)
+  Downloading distro-1.9.0-py3-none-any.whl.metadata (6.8 kB)
+Collecting sniffio (from google-genai)
+  Downloading sniffio-1.3.1-py3-none-any.whl.metadata (3.8 kB)
+Requirement already satisfied: idna>=2.8 in /home/hacker/pi-assistant-env/lib/python3.13/site-packages (from anyio<5.0.0,>=4.8.0->google-genai) (3.18)
+Requirement already satisfied: pyasn1-modules>=0.2.1 in /home/hacker/pi-assistant-env/lib/python3.13/site-packages (from google-auth<3.0.0,>=2.56.0->google-auth[requests]<3.0.0,>=2.56.0->google-genai) (0.4.2)
+Requirement already satisfied: cryptography>=38.0.3 in /home/hacker/pi-assistant-env/lib/python3.13/site-packages (from google-auth<3.0.0,>=2.56.0->google-auth[requests]<3.0.0,>=2.56.0->google-genai) (50.0.0)
+Requirement already satisfied: certifi in /home/hacker/pi-assistant-env/lib/python3.13/site-packages (from httpx<1.0.0,>=0.28.1->google-genai) (2026.7.22)
+Collecting httpcore==1.* (from httpx<1.0.0,>=0.28.1->google-genai)
+  Downloading httpcore-1.0.9-py3-none-any.whl.metadata (21 kB)
+Collecting h11>=0.16 (from httpcore==1.*->httpx<1.0.0,>=0.28.1->google-genai)
+  Downloading h11-0.16.0-py3-none-any.whl.metadata (8.3 kB)
+Requirement already satisfied: annotated-types>=0.6.0 in /home/hacker/pi-assistant-env/lib/python3.13/site-packages (from pydantic<3.0.0,>=2.12.5->google-genai) (0.8.0)
+Requirement already satisfied: pydantic-core==2.46.4 in /home/hacker/pi-assistant-env/lib/python3.13/site-packages (from pydantic<3.0.0,>=2.12.5->google-genai) (2.46.4)
+Requirement already satisfied: typing-inspection>=0.4.2 in /home/hacker/pi-assistant-env/lib/python3.13/site-packages (from pydantic<3.0.0,>=2.12.5->google-genai) (0.4.2)
+Requirement already satisfied: charset_normalizer<4,>=2 in /home/hacker/pi-assistant-env/lib/python3.13/site-packages (from requests<3.0.0,>=2.28.1->google-genai) (3.4.9)
+Requirement already satisfied: urllib3<3,>=1.26 in /home/hacker/pi-assistant-env/lib/python3.13/site-packages (from requests<3.0.0,>=2.28.1->google-genai) (2.7.0)
+Requirement already satisfied: cffi>=2.0.0 in /home/hacker/pi-assistant-env/lib/python3.13/site-packages (from cryptography>=38.0.3->google-auth<3.0.0,>=2.56.0->google-auth[requests]<3.0.0,>=2.56.0->google-genai) (2.1.0)
+Requirement already satisfied: pycparser in /home/hacker/pi-assistant-env/lib/python3.13/site-packages (from cffi>=2.0.0->cryptography>=38.0.3->google-auth<3.0.0,>=2.56.0->google-auth[requests]<3.0.0,>=2.56.0->google-genai) (3.0)
+Requirement already satisfied: pyasn1<0.7.0,>=0.6.1 in /home/hacker/pi-assistant-env/lib/python3.13/site-packages (from pyasn1-modules>=0.2.1->google-auth<3.0.0,>=2.56.0->google-auth[requests]<3.0.0,>=2.56.0->google-genai) (0.6.4)
+Downloading google_genai-2.16.0-py3-none-any.whl (1.1 MB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 1.1/1.1 MB 818.9 kB/s  0:00:01
+WARNING: Retrying (Retry(total=4, connect=None, read=None, redirect=None, status=None)) after connection broken by 'RemoteDisconnected('Remote end closed connection without response')': /simple/anyio/anyio-4.14.2-py3-none-any.whl
+Downloading anyio-4.14.2-py3-none-any.whl (124 kB)
+Downloading distro-1.9.0-py3-none-any.whl (20 kB)
+Downloading httpx-0.28.1-py3-none-any.whl (73 kB)
+Downloading httpcore-1.0.9-py3-none-any.whl (78 kB)
+Downloading tenacity-9.1.4-py3-none-any.whl (28 kB)
+Downloading websockets-16.1.1-cp313-cp313-manylinux2014_aarch64.manylinux_2_17_aarch64.manylinux_2_28_aarch64.whl (188 kB)
+Downloading h11-0.16.0-py3-none-any.whl (37 kB)
+Downloading sniffio-1.3.1-py3-none-any.whl (10 kB)
+Installing collected packages: websockets, tenacity, sniffio, h11, distro, anyio, httpcore, httpx, google-genai
+Successfully installed anyio-4.14.2 distro-1.9.0 google-genai-2.16.0 h11-0.16.0 httpcore-1.0.9 httpx-0.28.1 sniffio-1.3.1 tenacity-9.1.4 websockets-16.1.1
+(pi-assistant-env) hacker@hacker:~/pi-assistant $ cat > brain.py << 'EOF'
+> from google import genai
+> from google.genai import types
+> from config import GEMINI_API_KEY, ASSISTANT_NAME
+> from tools import get_current_time, get_weather
+>
+> client = genai.Client(api_key=GEMINI_API_KEY)
+>
+> SYSTEM_PROMPT = f"""You are {ASSISTANT_NAME}, a fast, friendly voice assistant like Alexa.
+> The user speaks Hindi, Urdu, or English, sometimes mixed. ALWAYS reply in the SAME language
+> the user just spoke in. Keep answers SHORT and conversational (1-3 sentences) since your
+> reply will be spoken out loud. Use the provided tools whenever the user asks about the
+> time or weather — never guess live data."""
+ath: st>
+>
+> def ask_gemini_with_audio(audio_path: str) -> str:
+>     """Uploads a recorded command (wav) and returns the assistant's spoken reply text."""
+>     audio_file = client.files.upload(file=audio_path)
+t(
+    >     response = client.models.generate_content(
+>         model="gemini-2.0-flash",
+>         contents=[audio_file, "Respond to what the user just said."],
+>         config=types.GenerateContentConfig(
+>             system_instruction=SYSTEM_PROMPT,
+>             tools=[get_current_time, get_weather],
+>         ),
+>     )
+>     return response.text
+> EOF
+(pi-assistant-env) hacker@hacker:~/pi-assistant $ python3 main.py
+2026-08-03 16:29:52.058819059 [W:onnxruntime:Default, device_discovery.cc:285 GetGpuDevices] Failed to detect devices under "/sys/class/drm/card1": device_discovery.cc:94 ReadFileContents Failed to open file: "/sys/class/drm/card1/device/vendor"
+2026-08-03 16:29:52.058952575 [W:onnxruntime:Default, device_discovery.cc:285 GetGpuDevices] Failed to detect devices under "/sys/class/drm/card0": device_discovery.cc:94 ReadFileContents Failed to open file: "/sys/class/drm/card0/device/vendor"
+/home/hacker/pi-assistant-env/lib/python3.13/site-packages/onnxruntime/capi/onnxruntime_inference_collection.py:153: UserWarning: Specified provider 'CUDAExecutionProvider' is not in available provider names.Available providers: 'AzureExecutionProvider, CPUExecutionProvider'
+  warnings.warn(
+/home/hacker/pi-assistant-env/lib/python3.13/site-packages/webrtcvad.py:1: UserWarning: pkg_resources is deprecated as an API. See https://setuptools.pypa.io/en/latest/pkg_resources.html. The pkg_resources package is slated for removal as early as 2025-11-30. Refrain from using this package or pin to Setuptools<81.
+  import pkg_resources
+Assistant ready. Say the wake word to start.
+Listening for wake word...
+Wake word detected: hey_jarvis_v0.1 (0.95)
+Listening for your command...
+Error: 429 RESOURCE_EXHAUSTED. {'error': {'code': 429, 'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 0, model: gemini-2.0-flash\n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 0, model: gemini-2.0-flash\n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_input_token_count, limit: 0, model: gemini-2.0-flash\nPlease retry in 52.025592697s.', 'status': 'RESOURCE_EXHAUSTED', 'details': [{'@type': 'type.googleapis.com/google.rpc.Help', 'links': [{'description': 'Learn more about Gemini API quotas', 'url': 'https://ai.google.dev/gemini-api/docs/rate-limits'}]}, {'@type': 'type.googleapis.com/google.rpc.QuotaFailure', 'violations': [{'quotaMetric': 'generativelanguage.googleapis.com/generate_content_free_tier_requests', 'quotaId': 'GenerateRequestsPerDayPerProjectPerModel-FreeTier', 'quotaDimensions': {'model': 'gemini-2.0-flash', 'location': 'global'}}, {'quotaMetric': 'generativelanguage.googleapis.com/generate_content_free_tier_requests', 'quotaId': 'GenerateRequestsPerMinutePerProjectPerModel-FreeTier', 'quotaDimensions': {'location': 'global', 'model': 'gemini-2.0-flash'}}, {'quotaMetric': 'generativelanguage.googleapis.com/generate_content_free_tier_input_token_count', 'quotaId': 'GenerateContentInputTokensPerModelPerMinute-FreeTier', 'quotaDimensions': {'location': 'global', 'model': 'gemini-2.0-flash'}}]}, {'@type': 'type.googleapis.com/google.rpc.RetryInfo', 'retryDelay': '52s'}]}}
+Listening for wake word...
+Wake word detected: hey_jarvis_v0.1 (0.98)
+Listening for your command...
+Error: 429 RESOURCE_EXHAUSTED. {'error': {'code': 429, 'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_input_token_count, limit: 0, model: gemini-2.0-flash\n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 0, model: gemini-2.0-flash\n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 0, model: gemini-2.0-flash\nPlease retry in 47.337253564s.', 'status': 'RESOURCE_EXHAUSTED', 'details': [{'@type': 'type.googleapis.com/google.rpc.Help', 'links': [{'description': 'Learn more about Gemini API quotas', 'url': 'https://ai.google.dev/gemini-api/docs/rate-limits'}]}, {'@type': 'type.googleapis.com/google.rpc.QuotaFailure', 'violations': [{'quotaMetric': 'generativelanguage.googleapis.com/generate_content_free_tier_input_token_count', 'quotaId': 'GenerateContentInputTokensPerModelPerMinute-FreeTier', 'quotaDimensions': {'location': 'global', 'model': 'gemini-2.0-flash'}}, {'quotaMetric': 'generativelanguage.googleapis.com/generate_content_free_tier_requests', 'quotaId': 'GenerateRequestsPerMinutePerProjectPerModel-FreeTier', 'quotaDimensions': {'location': 'global', 'model': 'gemini-2.0-flash'}}, {'quotaMetric': 'generativelanguage.googleapis.com/generate_content_free_tier_requests', 'quotaId': 'GenerateRequestsPerDayPerProjectPerModel-FreeTier', 'quotaDimensions': {'location': 'global', 'model': 'gemini-2.0-flash'}}]}, {'@type': 'type.googleapis.com/google.rpc.RetryInfo', 'retryDelay': '47s'}]}}
+Listening for wake word...
+Wake word detected: hey_jarvis_v0.1 (0.97)
+Listening for your command...
+Error: 429 RESOURCE_EXHAUSTED. {'error': {'code': 429, 'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 0, model: gemini-2.0-flash\n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 0, model: gemini-2.0-flash\n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_input_token_count, limit: 0, model: gemini-2.0-flash\nPlease retry in 38.280873535s.', 'status': 'RESOURCE_EXHAUSTED', 'details': [{'@type': 'type.googleapis.com/google.rpc.Help', 'links': [{'description': 'Learn more about Gemini API quotas', 'url': 'https://ai.google.dev/gemini-api/docs/rate-limits'}]}, {'@type': 'type.googleapis.com/google.rpc.QuotaFailure', 'violations': [{'quotaMetric': 'generativelanguage.googleapis.com/generate_content_free_tier_requests', 'quotaId': 'GenerateRequestsPerDayPerProjectPerModel-FreeTier', 'quotaDimensions': {'location': 'global', 'model': 'gemini-2.0-flash'}}, {'quotaMetric': 'generativelanguage.googleapis.com/generate_content_free_tier_requests', 'quotaId': 'GenerateRequestsPerMinutePerProjectPerModel-FreeTier', 'quotaDimensions': {'location': 'global', 'model': 'gemini-2.0-flash'}}, {'quotaMetric': 'generativelanguage.googleapis.com/generate_content_free_tier_input_token_count', 'quotaId': 'GenerateContentInputTokensPerModelPerMinute-FreeTier', 'quotaDimensions': {'location': 'global', 'model': 'gemini-2.0-flash'}}]}, {'@type': 'type.googleapis.com/google.rpc.RetryInfo', 'retryDelay': '38s'}]}}
+Listening for wake word...
+Wake word detected: hey_jarvis_v0.1 (1.00)
+Listening for your command...
+Error: 429 RESOURCE_EXHAUSTED. {'error': {'code': 429, 'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 0, model: gemini-2.0-flash\n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 0, model: gemini-2.0-flash\n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_input_token_count, limit: 0, model: gemini-2.0-flash\nPlease retry in 33.711114287s.', 'status': 'RESOURCE_EXHAUSTED', 'details': [{'@type': 'type.googleapis.com/google.rpc.Help', 'links': [{'description': 'Learn more about Gemini API quotas', 'url': 'https://ai.google.dev/gemini-api/docs/rate-limits'}]}, {'@type': 'type.googleapis.com/google.rpc.QuotaFailure', 'violations': [{'quotaMetric': 'generativelanguage.googleapis.com/generate_content_free_tier_requests', 'quotaId': 'GenerateRequestsPerDayPerProjectPerModel-FreeTier', 'quotaDimensions': {'model': 'gemini-2.0-flash', 'location': 'global'}}, {'quotaMetric': 'generativelanguage.googleapis.com/generate_content_free_tier_requests', 'quotaId': 'GenerateRequestsPerMinutePerProjectPerModel-FreeTier', 'quotaDimensions': {'model': 'gemini-2.0-flash', 'location': 'global'}}, {'quotaMetric': 'generativelanguage.googleapis.com/generate_content_free_tier_input_token_count', 'quotaId': 'GenerateContentInputTokensPerModelPerMinute-FreeTier', 'quotaDimensions': {'location': 'global', 'model': 'gemini-2.0-flash'}}]}, {'@type': 'type.googleapis.com/google.rpc.RetryInfo', 'retryDelay': '33s'}]}}
+Listening for wake word...
+Wake word detected: hey_jarvis_v0.1 (0.99)
+Listening for your command...
+^CStopping assistant.
+(pi-assistant-env) hacker@hacker:~/pi-assistant $ pip install SpeechRecognition
+Looking in indexes: https://pypi.org/simple, https://www.piwheels.org/simple
+Collecting SpeechRecognition
+  Downloading speechrecognition-3.17.0-py3-none-any.whl.metadata (28 kB)
+Requirement already satisfied: typing-extensions in /home/hacker/pi-assistant-env/lib/python3.13/site-packages (from SpeechRecognition) (4.16.0)
+Collecting standard-aifc (from SpeechRecognition)
+  Downloading standard_aifc-3.13.0-py3-none-any.whl.metadata (969 bytes)
+Collecting audioop-lts (from SpeechRecognition)
+  Downloading audioop_lts-0.2.2-cp313-abi3-manylinux2014_aarch64.manylinux_2_17_aarch64.manylinux_2_28_aarch64.whl.metadata (2.0 kB)
+Collecting standard-chunk (from standard-aifc->SpeechRecognition)
+  Downloading standard_chunk-3.13.0-py3-none-any.whl.metadata (860 bytes)
+Downloading speechrecognition-3.17.0-py3-none-any.whl (32.9 MB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 32.9/32.9 MB 2.0 MB/s  0:00:17
+Downloading audioop_lts-0.2.2-cp313-abi3-manylinux2014_aarch64.manylinux_2_17_aarch64.manylinux_2_28_aarch64.whl (85 kB)Downloading standard_aifc-3.13.0-py3-none-any.whl (10 kB)
+Downloading standard_chunk-3.13.0-py3-none-any.whl (4.9 kB)
+Installing collected packages: standard-chunk, audioop-lts, standard-aifc, SpeechRecognition
+Successfully installed SpeechRecognition-3.17.0 audioop-lts-0.2.2 standard-aifc-3.13.0 standard-chunk-3.13.0
+(pi-assistant-env) hacker@hacker:~/pi-assistant $ cat > brain.py << 'EOF'
+> import speech_recognition as sr
+> from google import genai
+> from google.genai import types
+> from config import GEMINI_API_KEY, ASSISTANT_NAME
+> from tools import get_current_time, get_weather
+>
+> client = genai.Client(api_key=GEMINI_API_KEY)
+>
+> SYSTEM_PROMPT = f"""You are {ASSISTANT_NAME}, a fast, friendly voice assistant like Alexa.
+> The user speaks Hindi, Urdu, or English, sometimes mixed. ALWAYS reply in the SAME language
+> the user just spoke in. Keep answers SHORT and conversational (1-3 sentences) since your
+> reply will be spoken out loud. Use the provided tools whenever the user asks about the
+> time or weather — never guess live data."""
+>
+> recognizer = sr.Recognizer()
+>
+>
+> def transcribe_audio(audio_path: str) -> str:
+>     """Free speech-to-text using Google's Web Speech API (no key needed)."""
+>     with sr.AudioFile(audio_path) as source:
+>         audio = recognizer.record(source)
+>     try:
+>         # try English first, then Hindi, then Urdu
+>         for lang in ["en-US", "hi-IN", "ur-PK"]:
+>             try:
+>                 return recognizer.recognize_google(audio, language=lang)
+>             except sr.UnknownValueError:
+>                 continue
+>         return ""
+>     except sr.RequestError as e:
+>         return f"[STT error: {e}]"
+>
+>
+> def ask_gemini_with_audio(audio_path: str) -> str:
+>     """Transcribes the recorded command, then asks Gemini for a short spoken reply."""
+>     user_text = transcribe_audio(audio_path)
+>     if not user_text:
+>         return "Sorry, I didn't catch that."
+>
+>     response = client.models.generate_content(
+>         model="gemini-3.1-flash-lite",
+>         contents=user_text,
+>         config=types.GenerateContentConfig(
+>             system_instruction=SYSTEM_PROMPT,
+>             tools=[get_current_time, get_weather],
+>         ),
+>     )
+>     return response.text
+> EOF
+(pi-assistant-env) hacker@hacker:~/pi-assistant $ python3 main.py
+2026-08-03 16:37:35.008837753 [W:onnxruntime:Default, device_discovery.cc:285 GetGpuDevices] Failed to detect devices under "/sys/class/drm/card1": device_discovery.cc:94 ReadFileContents Failed to open file: "/sys/class/drm/card1/device/vendor"
+2026-08-03 16:37:35.008963864 [W:onnxruntime:Default, device_discovery.cc:285 GetGpuDevices] Failed to detect devices under "/sys/class/drm/card0": device_discovery.cc:94 ReadFileContents Failed to open file: "/sys/class/drm/card0/device/vendor"
+/home/hacker/pi-assistant-env/lib/python3.13/site-packages/onnxruntime/capi/onnxruntime_inference_collection.py:153: UserWarning: Specified provider 'CUDAExecutionProvider' is not in available provider names.Available providers: 'AzureExecutionProvider, CPUExecutionProvider'
+  warnings.warn(
+/home/hacker/pi-assistant-env/lib/python3.13/site-packages/webrtcvad.py:1: UserWarning: pkg_resources is deprecated as an API. See https://setuptools.pypa.io/en/latest/pkg_resources.html. The pkg_resources package is slated for removal as early as 2025-11-30. Refrain from using this package or pin to Setuptools<81.
+  import pkg_resources
+Assistant ready. Say the wake word to start.
+Listening for wake word...
+Wake word detected: hey_jarvis_v0.1 (0.64)
+Listening for your command...
+Error: FLAC conversion utility not available - consider installing the FLAC command line application by running `apt-get install flac` or your operating system's equivalent
+Listening for wake word...
+Wake word detected: hey_jarvis_v0.1 (0.97)
+Listening for your command...
+Error: FLAC conversion utility not available - consider installing the FLAC command line application by running `apt-get install flac` or your operating system's equivalent
+Listening for wake word...
+Wake word detected: hey_jarvis_v0.1 (0.61)
+Listening for your command...
+Error: FLAC conversion utility not available - consider installing the FLAC command line application by running `apt-get install flac` or your operating system's equivalent
+Listening for wake word...
+Wake word detected: hey_jarvis_v0.1 (0.97)
+Listening for your command...
+Error: FLAC conversion utility not available - consider installing the FLAC command line application by running `apt-get install flac` or your operating system's equivalent
+Listening for wake word...
+Wake word detected: hey_jarvis_v0.1 (0.97)
+Listening for your command...
+Error: FLAC conversion utility not available - consider installing the FLAC command line application by running `apt-get install flac` or your operating system's equivalent
+Listening for wake word...
+Wake word detected: hey_jarvis_v0.1 (0.78)
+Listening for your command...
+^CStopping assistant.
+(pi-assistant-env) hacker@hacker:~/pi-assistant $ (pi-assistant-env) hacker@hacker:~/pi-assistant $ python3 main.py
+-bash: syntax error near unexpected token `hacker@hacker:~/pi-assistant'
+: device_discovery.cc:94 ReadFileContents Failed to open file: "/sys/class/drm/card1/device/vendor"
+2026-08-03 16:37:35.008963864 [W:onnxruntime:Default, device_discovery.cc:285 GetGpuDevices] Failed to detect devices under "/sys/class/drm/card0": device_discovery.cc:94 ReadFileContents Failed to open file: "/sys/class/drm/card0/device/vendor"
+/home/hacker/pi-assistant-env/lib/python3.13/site-packages/onnxruntime/capi/onnxruntime_inference_collection.py:1(pi-assistant-env) hacker@hacker:~/pi-assistant $ 2026-08-03 16:37:35.008837753 [W:onnxruntime:Default, device_discovery.cc:285 GetGpuDevices] Failed to detect devices under "/sys/class/drm/card1": device_discovery.cc:94 ReadFileContents Failed to open file: "/sys/class/drm/card1/device/vendor"
+d line application by running `apt-get install flac` or your operating system's equivalent
+Listening for wake word...
+Wake word detected: hey_jarvis_v0.1 (0.97)
+Listening for your command...
+Error: FLAC conversion utility not available - consider installing the FLAC com-bash: 2026-08-03: command not found
+mand line application by running `apt-get install flac` or your operating system's equivalent
+Listening for wak(pi-assistant-env) hacker@hacker:~/pi-assistant $ 2026-08-03 16:37:35.008963864 [W:onnxruntime:Default, device_discovery.cc:285 GetGpuDevices] Failed to detect devices under "/sys/class/drm/card0": device_discovery.cc:94 ReadFileContents Failed to open file: "/sys/class/drm/card0/device/vendor"
+)
+Listening for your command...
+^CStopping assistan-bash: 2026-08-03: command not found
+(pi-assistant-env) hacker@hacker:~/pi-assistant $ /home/hacker/pi-assistant-env/lib/python3.13/site-packages/onnxruntime/capi/onnxruntime_inference_collection.py:153: UserWarning: Specified provider 'CUDAExecutionProvider' is not in available provider names.Available providers: 'AzureExecutionProvider, CPUExecutionProvider'
+sistant -bash: /home/hacker/pi-assistant-env/lib/python3.13/site-packages/onnxruntime/capi/onnxruntime_inference_collection.py:153:: No such file or directory
+(pi-assistant-env) hacker@hacker:~/pi-assistant $   warnings.warn(
+-bash: syntax error near unexpected token `newline'
+(pi-assistant-env) hacker@hacker:~/pi-assistant $ /home/hacker/pi-assistant-env/lib/python3.13/site-packages/webrtcvad.py:1: UserWarning: pkg_resources is deprecated as an API. See https://setuptools.pypa.io/en/latest/pkg_resources.html. The pkg_resources package is slated for removal as early as 2025-11-30. Refrain from using this package or pin to Setuptools<81.
+-bash: 81.: No such file or directory
+(pi-assistant-env) hacker@hacker:~/pi-assistant $   import pkg_resources
+-bash: import: command not found
+(pi-assistant-env) hacker@hacker:~/pi-assistant $ Assistant ready. Say the wake word to start.
+-bash: Assistant: command not found
+(pi-assistant-env) hacker@hacker:~/pi-assistant $ Listening for wake word...
+-bash: Listening: command not found
+(pi-assistant-env) hacker@hacker:~/pi-assistant $ Wake word detected: hey_jarvis_v0.1 (0.64)
+-bash: syntax error near unexpected token `('
+(pi-assistant-env) hacker@hacker:~/pi-assistant $ Listening for your command...
+-bash: Listening: command not found
+(pi-assistant-env) hacker@hacker:~/pi-assistant $ Error: FLAC conversion utility not available - consider installing the FLAC command line application by running `apt-get install flac` or your operating system's equivalent
+> Listening for wake word...
+> Wake word detected: hey_jarvis_v0.1 (0.97)
+> Listening for your command...
+> Error: FLAC conversion utility not available - consider installing the FLAC command line application by running `apt-get install flac` or your operating system's equivalent
+$E: Could not open lock file /var/lib/dpkg/lock-frontend - open (13: Permission denied)
+E: Unable to acquire the dpkg frontend lock (/var/lib/dpkg/lock-frontend), are you root?
+-bash: Error:: command not found
+(pi-assistant-env) hacker@hacker:~/pi-assistant $ Listening for wake word...
+-bash: Listening: command not found
+(pi-assistant-env) hacker@hacker:~/pi-assistant $ Wake word detected: hey_jarvis_v0.1 (0.61)
+-bash: syntax error near unexpected token `('
+(pi-assistant-env) hacker@hacker:~/pi-assistant $ Listening for your command...
+-bash: Listening: command not found
+(pi-assistant-env) hacker@hacker:~/pi-assistant $ Error: FLAC conversion utility not available - consider installing the FLAC command line application by running `apt-get install flac` or your operating system's equivalent
+> Listening for wake word...
+> Wake word detected: hey_jarvis_v0.1 (0.97)
+> Listening for your command...
+> Error: FLAC conversion utility not available - consider installing the FLAC command line application by running `apt-get install flac` or your operating system's equivalent
+E: Could not open lock file /var/lib/dpkg/lock-frontend - open (13: Permission denied)
+E: Unable to acquire the dpkg frontend lock (/var/lib/dpkg/lock-frontend), are you root?
+-bash: Error:: command not found
+(pi-assistant-env) hacker@hacker:~/pi-assistant $ Listening for wake word...
+-bash: Listening: command not found
+(pi-assistant-env) hacker@hacker:~/pi-assistant $ Wake word detected: hey_jarvis_v0.1 (0.97)
+-bash: syntax error near unexpected token `('
+(pi-assistant-env) hacker@hacker:~/pi-assistant $ Listening for your command...
+-bash: Listening: command not found
+(pi-assistant-env) hacker@hacker:~/pi-assistant $ Error: FLAC conversion utility not available - consider installing the FLAC command line application by running `apt-get install flac` or your operating system's equivalent
+> Listening for wake word...
+> Wake word detected: hey_jarvis_v0.1 (0.78)
+> Listening for your command...
+> ^CStopping assistant.
+> Wake word detected: hey_jarvis_v0.1 (0.97)
+> ^C
+(pi-assistant-env) hacker@hacker:~/pi-assistant $ sudo apt install -y flac
+[sudo] password for hacker:
+Installing:
+  flac
+
+Summary:
+  Upgrading: 0, Installing: 1, Removing: 0, Not Upgrading: 60
+  Download size: 174 kB
+  Space needed: 538 kB / 50.9 GB available
+
+Get:1 http://deb.debian.org/debian trixie/main arm64 flac arm64 1.5.0+ds-2 [174 kB]
+Fetched 174 kB in 0s (1,416 kB/s)
+Selecting previously unselected package flac.
+(Reading database ... 74587 files and directories currently installed.)
+Preparing to unpack .../flac_1.5.0+ds-2_arm64.deb ...
+Unpacking flac (1.5.0+ds-2) ...
+Setting up flac (1.5.0+ds-2) ...
+Processing triggers for man-db (2.13.1-1) ...
+(pi-assistant-env) hacker@hacker:~/pi-assistant $
+ing flac (1.5.0+ds-2) ...(pi-assistant-env) hacker@hacker:~/pi-assistant $ Unpacking flac (1.5.0+ds-2) ...
+-bash: syntax error near unexpected token `('
+(pi-assistant-env) hacker@hacker:~/pi-assistant $ python3 main.py
+2026-08-03 16:41:28.832630818 [W:onnxruntime:Default, device_discovery.cc:285 GetGpuDevices] Failed to detect devices under "/sys/class/drm/card1": device_discovery.cc:94 ReadFileContents Failed to open file: "/sys/class/drm/card1/device/vendor"
+2026-08-03 16:41:28.832770596 [W:onnxruntime:Default, device_discovery.cc:285 GetGpuDevices] Failed to detect devices under "/sys/class/drm/card0": device_discovery.cc:94 ReadFileContents Failed to open file: "/sys/class/drm/card0/device/vendor"
+/home/hacker/pi-assistant-env/lib/python3.13/site-packages/onnxruntime/capi/onnxruntime_inference_collection.py:153: UserWarning: Specified provider 'CUDAExecutionProvider' is not in available provider names.Available providers: 'AzureExecutionProvider, CPUExecutionProvider'
+  warnings.warn(
+/home/hacker/pi-assistant-env/lib/python3.13/site-packages/webrtcvad.py:1: UserWarning: pkg_resources is deprecated as an API. See https://setuptools.pypa.io/en/latest/pkg_resources.html. The pkg_resources package is slated for removal as early as 2025-11-30. Refrain from using this package or pin to Setuptools<81.
+  import pkg_resources
+Assistant ready. Say the wake word to start.
+Listening for wake word...
+Wake word detected: hey_jarvis_v0.1 (0.58)
+Listening for your command...
+Assistant: नमस्ते! मैं आपकी क्या मदद कर सकता हूँ?
+[W][16:42:09.241882] pw.conf      | [          conf.c: 1182 try_load_conf()] can't load config client.conf: No such file or directory
+[E][16:42:09.242022] pw.conf      | [          conf.c: 1215 pw_conf_load_conf_for_context()] can't load config client.conf: No such file or directory
+Listening for wake word...
+Wake word detected: hey_jarvis_v0.1 (0.84)
+Listening for your command...
+Assistant: It is currently 4:42 PM.
+[W][16:42:21.772227] pw.conf      | [          conf.c: 1182 try_load_conf()] can't load config client.conf: No such file or directory
+[E][16:42:21.772364] pw.conf      | [          conf.c: 1215 pw_conf_load_conf_for_context()] can't load config client.conf: No such file or directory
+Listening for wake word...
+^CStopping assistant.
+(pi-assistant-env) hacker@hacker:~/pi-assistant $ python3 main.py
+2026-08-03 16:43:22.442943550 [W:onnxruntime:Default, device_discovery.cc:285 GetGpuDevices] Failed to detect devices under "/sys/class/drm/card1": device_discovery.cc:94 ReadFileContents Failed to open file: "/sys/class/drm/card1/device/vendor"
+2026-08-03 16:43:22.443073773 [W:onnxruntime:Default, device_discovery.cc:285 GetGpuDevices] Failed to detect devices under "/sys/class/drm/card0": device_discovery.cc:94 ReadFileContents Failed to open file: "/sys/class/drm/card0/device/vendor"
+/home/hacker/pi-assistant-env/lib/python3.13/site-packages/onnxruntime/capi/onnxruntime_inference_collection.py:153: UserWarning: Specified provider 'CUDAExecutionProvider' is not in available provider names.Available providers: 'AzureExecutionProvider, CPUExecutionProvider'
+  warnings.warn(
+/home/hacker/pi-assistant-env/lib/python3.13/site-packages/webrtcvad.py:1: UserWarning: pkg_resources is deprecated as an API. See https://setuptools.pypa.io/en/latest/pkg_resources.html. The pkg_resources package is slated for removal as early as 2025-11-30. Refrain from using this package or pin to Setuptools<81.
+  import pkg_resources
+Assistant ready. Say the wake word to start.
+Listening for wake word...
+Wake word detected: hey_jarvis_v0.1 (0.67)
+Listening for your command...
+Assistant: Zaroor! Ek baar ek bachche ne teacher se poochha: "Ma'am, kya aap kisi ko us kaam ke liye saza de sakti hain jo usne kiya hi nahi?" Teacher boli: "Bilkul nahi." Tab bachcha bola: "Bahut achha, kyunki maine apna homework nahi kiya hai!"
+[W][16:43:55.958850] pw.conf      | [          conf.c: 1182 try_load_conf()] can't load config client.conf: No such file or directory
+[E][16:43:55.958990] pw.conf      | [          conf.c: 1215 pw_conf_load_conf_for_context()] can't load config client.conf: No such file or directory
+Listening for wake word...
+Wake word detected: hey_jarvis_v0.1 (0.89)
+Listening for your command...
+Assistant: Ek baar ek aadmi doctor ke paas gaya aur bola, "Doctor sahab, jab main apne kaan ko ungli lagata hoon toh dard hota hai, jab aankh ko lagata hoon toh dard hota hai, aur jab pet ko lagata hoon toh bhi dard hota hai. Mujhe kya hua hai?"
+
+Doctor ne check kiya aur bola, "Bhai sahab, aapki ungli toot gayi hai!"
+[W][16:44:38.703947] pw.conf      | [          conf.c: 1182 try_load_conf()] can't load config client.conf: No such file or directory
+[E][16:44:38.704086] pw.conf      | [          conf.c: 1215 pw_conf_load_conf_for_context()] can't load config client.conf: No such file or directory
+Listening for wake word...
+Wake word detected: hey_jarvis_v0.1 (0.95)
+Listening for your command...
+Assistant: जी हाँ, मैं आपसे हिंदी में बात कर सकता हूँ। बताइए, मैं आपकी क्या मदद करूँ?
+[W][16:45:14.512148] pw.conf      | [          conf.c: 1182 try_load_conf()] can't load config client.conf: No such file or directory
+[E][16:45:14.512283] pw.conf      | [          conf.c: 1215 pw_conf_load_conf_for_context()] can't load config client.conf: No such file or directory
+Listening for wake word...
+Wake word detected: hey_jarvis_v0.1 (0.69)
+Listening for your command...
+Assistant: Sorry, I didn't catch that.
+[W][16:45:48.007063] pw.conf      | [          conf.c: 1182 try_load_conf()] can't load config client.conf: No such file or directory
+[E][16:45:48.007923] pw.conf      | [          conf.c: 1215 pw_conf_load_conf_for_context()] can't load config client.conf: No such file or directory
+Listening for wake word...
+Wake word detected: hey_jarvis_v0.1 (0.78)
+Listening for your command...
+Assistant: Sorry, I didn't catch that.
+[W][16:45:55.408295] pw.conf      | [          conf.c: 1182 try_load_conf()] can't load config client.conf: No such file or directory
+[E][16:45:55.408436] pw.conf      | [          conf.c: 1215 pw_conf_load_conf_for_context()] can't load config client.conf: No such file or directory
+Listening for wake word...
+Wake word detected: hey_jarvis_v0.1 (0.83)
+Listening for your command...
+Assistant: नमस्ते! मैं जार्विस हूँ। बताइए, मैं आपकी क्या मदद कर सकता हूँ?
+[W][16:46:38.860109] pw.conf      | [          conf.c: 1182 try_load_conf()] can't load config client.conf: No such file or directory
+[E][16:46:38.860248] pw.conf      | [          conf.c: 1215 pw_conf_load_conf_for_context()] can't load config client.conf: No such file or directory
+Listening for wake word...
+Wake word detected: hey_jarvis_v0.1 (0.56)
+Listening for your command...
+Assistant: Ek aadmi doctor ke paas gaya: "Doctor sahab, jab main coffee peeta hoon toh meri aankh mein dard hota hai." Doctor bola: "Agli baar cup se chammach nikalna mat bhoolna!"
+[W][16:46:59.341362] pw.conf      | [          conf.c: 1182 try_load_conf()] can't load config client.conf: No such file or directory
+[E][16:46:59.341501] pw.conf      | [          conf.c: 1215 pw_conf_load_conf_for_context()] can't load config client.conf: No such file or directory
+^CStopping assistant.
+(pi-assistant-env) hacker@hacker:~/pi-assistant $ nano brain.py
+(pi-assistant-env) hacker@hacker:~/pi-assistant $ cat > brain.py << 'EOF'
+> import speech_recognition as sr
+> from google import genai
+> from google.genai import types
+> from config import GEMINI_API_KEY, ASSISTANT_NAME
+> from tools import get_current_time, get_weather
+>
+> client = genai.Client(api_key=GEMINI_API_KEY)
+>
+> SYSTEM_PROMPT = f"""You are {ASSISTANT_NAME}, a fast, friendly voice assistant like Alexa.
+> The user speaks Hindi, Urdu, or English, sometimes mixed. ALWAYS reply in the SAME language
+> the user just spoke in. If replying in Hindi, you MUST write in Devanagari script (e.g. नमस्ते),
+> never Roman/Hinglish letters. If replying in Urdu, you MUST write in Urdu/Nastaliq script
+> (e.g. سلام), never Roman letters. Keep answers SHORT and conversational (1-3 sentences) since
+> your reply will be spoken out loud. Use the provided tools whenever the user asks about the
+> time or weather — never guess live data."""
+>
+> recognizer = sr.Recognizer()
+>
+>
+> def transcribe_audio(audio_path: str) -> str:
+>     """Free speech-to-text using Google's Web Speech API (no key needed)."""
+>     with sr.AudioFile(audio_path) as source:
+>         audio = recognizer.record(source)
+>     try:
+>         for lang in ["en-US", "hi-IN", "ur-PK"]:
+>             try:
+>                 return recognizer.recognize_google(audio, language=lang)
+>             except sr.UnknownValueError:
+>                 continue
+>         return ""
+>     except sr.RequestError as e:
+>         return f"[STT error: {e}]"
+>
+>
+> def ask_gemini_with_audio(audio_path: str) -> str:
+>     """Transcribes the recorded command, then asks Gemini for a short spoken reply."""
+>     user_text = transcribe_audio(audio_path)
+>     if not user_text:
+>         return "Sorry, I didn't catch that."
+>
+>     response = client.models.generate_content(
+>         model="gemini-3.1-flash-lite",
+>         contents=user_text,
+>         config=types.GenerateContentConfig(
+>             system_instruction=SYSTEM_PROMPT,
+>             tools=[get_current_time, get_weather],
+>         ),
+>     )
+>     return response.text
+> EOF
+(pi-assistant-env) hacker@hacker:~/pi-assistant $ cat > listener.py << 'EOF'
+> import wave
+> import sounddevice as sd
+> import webrtcvad
+> from config import MIC_DEVICE_INDEX
+>
+>
+> def record_command(out_path: str = "command.wav", max_seconds: int = 8) -> str:
+>     """Records audio after the wake word until ~0.5s of silence is detected."""
+>     SAMPLE_RATE = 16000
+>     FRAME_MS = 30
+>     FRAME_SIZE = int(SAMPLE_RATE * FRAME_MS / 1000)
+>     vad = webrtcvad.Vad(2)
+>
+>     frames = []
+>     silence_run = 0
+>     triggered = False
+>     max_frames = int(max_seconds * 1000 / FRAME_MS)
+>
+>     with sd.InputStream(samplerate=SAMPLE_RATE, channels=1, dtype="int16",
+>                          blocksize=FRAME_SIZE, device=MIC_DEVICE_INDEX) as stream:
+>         print("Listening for your command...")
+>         for _ in range(max_frames):
+>             audio, _ = stream.read(FRAME_SIZE)
+>             pcm = audio.tobytes()
+>             is_speech = vad.is_speech(pcm, SAMPLE_RATE)
+>             frames.append(pcm)
+>             if is_speech:
+>                 triggered = True
+>                 silence_run = 0
+>             elif triggered:
+>                 silence_run += 1
+>                 if silence_run > int(500 / FRAME_MS):  # ~0.5s of silence
+>                     break
+>
+>     with wave.open(out_path, "wb") as wf:
+>         wf.setnchannels(1)
+>         wf.setsampwidth(2)
+>         wf.setframerate(SAMPLE_RATE)
+>         wf.writeframes(b"".join(frames))
+>
+>     return out_path
+> EOF
+(pi-assistant-env) hacker@hacker:~/pi-assistant $ python3 main.py
+2026-08-03 16:50:12.317480559 [W:onnxruntime:Default, device_discovery.cc:285 GetGpuDevices] Failed to detect devices under "/sys/class/drm/card1": device_discovery.cc:94 ReadFileContents Failed to open file: "/sys/class/drm/card1/device/vendor"
+2026-08-03 16:50:12.317658301 [W:onnxruntime:Default, device_discovery.cc:285 GetGpuDevices] Failed to detect devices under "/sys/class/drm/card0": device_discovery.cc:94 ReadFileContents Failed to open file: "/sys/class/drm/card0/device/vendor"
+/home/hacker/pi-assistant-env/lib/python3.13/site-packages/onnxruntime/capi/onnxruntime_inference_collection.py:153: UserWarning: Specified provider 'CUDAExecutionProvider' is not in available provider names.Available providers: 'AzureExecutionProvider, CPUExecutionProvider'
+  warnings.warn(
+/home/hacker/pi-assistant-env/lib/python3.13/site-packages/webrtcvad.py:1: UserWarning: pkg_resources is deprecated as an API. See https://setuptools.pypa.io/en/latest/pkg_resources.html. The pkg_resources package is slated for removal as early as 2025-11-30. Refrain from using this package or pin to Setuptools<81.
+  import pkg_resources
+Assistant ready. Say the wake word to start.
+Listening for wake word...
+Wake word detected: hey_jarvis_v0.1 (0.86)
+Listening for your command...
+Assistant: Sorry, I didn't catch that.
+[W][16:50:29.281221] pw.conf      | [          conf.c: 1182 try_load_conf()] can't load config client.conf: No such file or directory
+[E][16:50:29.281362] pw.conf      | [          conf.c: 1215 pw_conf_load_conf_for_context()] can't load config client.conf: No such file or directory
+Listening for wake word...
+Wake word detected: hey_jarvis_v0.1 (0.98)
+Listening for your command...
+Assistant: Sorry, I didn't catch that.
+[W][16:50:47.048260] pw.conf      | [          conf.c: 1182 try_load_conf()] can't load config client.conf: No such file or directory
+[E][16:50:47.048396] pw.conf      | [          conf.c: 1215 pw_conf_load_conf_for_context()] can't load config client.conf: No such file or directory
+Listening for wake word...
+Wake word detected: hey_jarvis_v0.1 (0.97)
+Listening for your command...
+Assistant: Sorry, I didn't catch that.
+[W][16:50:56.455514] pw.conf      | [          conf.c: 1182 try_load_conf()] can't load config client.conf: No such file or directory
+[E][16:50:56.455653] pw.conf      | [          conf.c: 1215 pw_conf_load_conf_for_context()] can't load config client.conf: No such file or directory
+Listening for wake word...
+Wake word detected: hey_jarvis_v0.1 (1.00)
+Listening for your command...
+Assistant: ज़रूर! एक चुटकुला सुनिए: एक बार एक बच्चा अपनी माँ से बोला, "माँ, क्या मैं भगवान की तरह दिखता हूँ?" माँ ने कहा, "नहीं बेटा, तुम ऐसा क्यों पूछ रहे हो?" बच्चा बोला, "क्योंकि जब मैं बाहर खेलता हूँ, तो सब यही कहते हैं—हे भगवान! फिर आ गया!"
+[W][16:51:12.241455] pw.conf      | [          conf.c: 1182 try_load_conf()] can't load config client.conf: No such file or directory
+[E][16:51:12.242284] pw.conf      | [          conf.c: 1215 pw_conf_load_conf_for_context()] can't load config client.conf: No such file or directory
+Listening for wake word...
+Wake word detected: hey_jarvis_v0.1 (1.00)
+Listening for your command...
+Assistant: Sorry, I didn't catch that.
+[W][16:51:41.739553] pw.conf      | [          conf.c: 1182 try_load_conf()] can't load config client.conf: No such file or directory
+[E][16:51:41.740380] pw.conf      | [          conf.c: 1215 pw_conf_load_conf_for_context()] can't load config client.conf: No such file or directory
+Listening for wake word...
+Wake word detected: hey_jarvis_v0.1 (0.98)
+Listening for your command...
+Assistant: ایک پٹھان نے دوسرے سے پوچھا: "یار، کیا تمہیں معلوم ہے کہ مچھلی کیسے پکاتے ہیں؟"
+دوسرا بولا: "پہلے اسے پانی سے باہر نکالو، پھر خود ہی پک جائے گی!"
+[W][16:51:53.156338] pw.conf      | [          conf.c: 1182 try_load_conf()] can't load config client.conf: No such file or directory
+[E][16:51:53.157175] pw.conf      | [          conf.c: 1215 pw_conf_load_conf_for_context()] can't load config client.conf: No such file or directory
+Listening for wake word...
+Wake word detected: hey_jarvis_v0.1 (0.98)
+Listening for your command...
+Assistant: एक डॉक्टर ने मरीज से कहा: "आपको हर रोज़ 5 किलोमीटर पैदल चलना चाहिए।" एक हफ्ते बाद मरीज ने फोन किया: "मैं घर से 35 किलोमीटर दूर आ गया हूँ, अब वापस कैसे आऊँ?"
+[W][16:52:17.817847] pw.conf      | [          conf.c: 1182 try_load_conf()] can't load config client.conf: No such file or directory
+[E][16:52:17.817986] pw.conf      | [          conf.c: 1215 pw_conf_load_conf_for_context()] can't load config client.conf: No such file or directory
+Listening for wake word...
+Wake word detected: hey_jarvis_v0.1 (0.97)
+Listening for your command...
+Assistant: Sorry, I didn't catch that.
+[W][16:52:37.865399] pw.conf      | [          conf.c: 1182 try_load_conf()] can't load config client.conf: No such file or directory
+[E][16:52:37.865540] pw.conf      | [          conf.c: 1215 pw_conf_load_conf_for_context()] can't load config client.conf: No such file or directory
+Listening for wake word...
+Wake word detected: hey_jarvis_v0.1 (0.80)
+Listening for your command...
+Assistant: Why don't scientists trust atoms? Because they make up everything!
+[W][16:53:00.164912] pw.conf      | [          conf.c: 1182 try_load_conf()] can't load config client.conf: No such file or directory
+[E][16:53:00.165056] pw.conf      | [          conf.c: 1215 pw_conf_load_conf_for_context()] can't load config client.conf: No such file or directory
+Listening for wake word...
+Wake word detected: hey_jarvis_v0.1 (0.87)
+Listening for your command...
+Assistant: Sorry, I didn't catch that.
+^CStopping assistant.
+(pi-assistant-env) hacker@hacker:~/pi-assistant $ cat > brain.py << 'EOF'
+rom config import GEMINI_API_KEY, ASSISTANT_NAME
+from tools import get_current_tim> import speech_recognition as sr
+> from google import genai
+> from google.genai import types
+> from config import GEMINI_API_KEY, ASSISTANT_NAME
+> from tools import get_current_time, get_weather
+>
+> client = genai.Client(api_key=GEMINI_API_KEY)
+>
+> SYSTEM_PROMPT = f"""You are {ASSISTANT_NAME}, a fast, friendly voice assistant like Alexa.
+> The user speaks Hindi, Urdu, or English, sometimes mixed. ALWAYS reply in the SAME language
+> the user just spoke in. If replying in Hindi, you MUST write in Devanagari script (e.g. नमस्ते),
+> never Roman/Hinglish letters. If replying in Urdu, you MUST write in Urdu/Nastaliq script
+> (e.g. سلام), never Roman letters. Keep answers SHORT and conversational (1-3 sentences) since
+> your reply will be spoken out loud. Use the provided tools whenever the user asks about the
+> time or weather — never guess live data."""
+>
+> recognizer = sr.Recognizer()
+>
+>
+> def transcribe_audio(audio_path: str) -> str:
+>     """Free speech-to-text using Google's Web Speech API, checking en/hi/ur
+>     and picking whichever result has the highest confidence."""
+>     with sr.AudioFile(audio_path) as source:
+>         audio = recognizer.record(source)
+>
+>     best_text = ""
+>     best_conf = -1.0
+>
+>     for lang in ["en-US", "hi-IN", "ur-PK"]:
+>         try:
+>             result = recognizer.recognize_google(
+>                 audio, language=lang, show_all=True
+>             )
+>             if not result or "alternative" not in result:
+>                 continue
+>             top = result["alternative"][0]
+>             text = top.get("transcript", "")
+>             conf = top.get("confidence", 0.5)  # Google doesn't always give confidence
+>             if text and conf > best_conf:
+>                 best_text = text
+>                 best_conf = conf
+>         except (sr.UnknownValueError, sr.RequestError):
+>             continue
+>
+>     return best_text
+>
+>
+> def ask_gemini_with_audio(audio_path: str) -> str:
+>     """Transcribes the recorded command, then asks Gemini for a short spoken reply."""
+>     user_text = transcribe_audio(audio_path)
+>     if not user_text:
+>         return "Sorry, I didn't catch that."
+>
+>     response = client.models.generate_content(
+>         model="gemini-3.1-flash-lite",
+>         contents=user_text,
+>         config=types.GenerateContentConfig(
+>             system_instruction=SYSTEM_PROMPT,
+>             tools=[get_current_time, get_weather],
+>         ),
+>     )
+>     return response.text
+> EOF
+(pi-assistant-env) hacker@hacker:~/pi-assistant $ python3 main.py
+2026-08-03 16:56:44.566364940 [W:onnxruntime:Default, device_discovery.cc:285 GetGpuDevices] Failed to detect devices under "/sys/class/drm/card1": device_discovery.cc:94 ReadFileContents Failed to open file: "/sys/class/drm/card1/device/vendor"
+2026-08-03 16:56:44.566498146 [W:onnxruntime:Default, device_discovery.cc:285 GetGpuDevices] Failed to detect devices under "/sys/class/drm/card0": device_discovery.cc:94 ReadFileContents Failed to open file: "/sys/class/drm/card0/device/vendor"
+/home/hacker/pi-assistant-env/lib/python3.13/site-packages/onnxruntime/capi/onnxruntime_inference_collection.py:153: UserWarning: Specified provider 'CUDAExecutionProvider' is not in available provider names.Available providers: 'AzureExecutionProvider, CPUExecutionProvider'
+  warnings.warn(
+/home/hacker/pi-assistant-env/lib/python3.13/site-packages/webrtcvad.py:1: UserWarning: pkg_resources is deprecated as an API. See https://setuptools.pypa.io/en/latest/pkg_resources.html. The pkg_resources package is slated for removal as early as 2025-11-30. Refrain from using this package or pin to Setuptools<81.
+  import pkg_resources
+Assistant ready. Say the wake word to start.
+Listening for wake word...
+Wake word detected: hey_jarvis_v0.1 (0.87)
+Listening for your command...
+Assistant: जरूर, यह रहा एक चुटकुला:
+
+पप्पू: पापा, क्या भगवान सब कुछ देखते हैं?
+पापा: हाँ बेटा।
+पप्पू: तो फिर उन्होंने मेरी स्कूल की फीस क्यों नहीं भरवाई?
+[W][16:57:26.764212] pw.conf      | [          conf.c: 1182 try_load_conf()] can't load config client.conf: No such file or directory
+[E][16:57:26.764351] pw.conf      | [          conf.c: 1215 pw_conf_load_conf_for_context()] can't load config client.conf: No such file or directory
+Listening for wake word...
+Wake word detected: hey_jarvis_v0.1 (0.99)
+Listening for your command...
+Assistant: The current time in Hyderabad is 4:58 PM.
+[W][16:58:13.641976] pw.conf      | [          conf.c: 1182 try_load_conf()] can't load config client.conf: No such file or directory
+[E][16:58:13.642114] pw.conf      | [          conf.c: 1215 pw_conf_load_conf_for_context()] can't load config client.conf: No such file or directory
+Listening for wake word...
+^CStopping assistant.
+(pi-assistant-env) hacker@hacker:~/pi-assistant $ alsamixer
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+(pi-assistant-env) hacker@hacker:~/pi-assistant $ python3 main.py
+2026-08-03 17:06:46.034677435 [W:onnxruntime:Default, device_discovery.cc:285 GetGpuDevices] Failed to detect devices under "/sys/class/drm/card1": device_discovery.cc:94 ReadFileContents Failed to open file: "/sys/class/drm/card1/device/vendor"
+2026-08-03 17:06:46.034802855 [W:onnxruntime:Default, device_discovery.cc:285 GetGpuDevices] Failed to detect devices under "/sys/class/drm/card0": device_discovery.cc:94 ReadFileContents Failed to open file: "/sys/class/drm/card0/device/vendor"
+/home/hacker/pi-assistant-env/lib/python3.13/site-packages/onnxruntime/capi/onnxruntime_inference_collection.py:153: UserWarning: Specified provider 'CUDAExecutionProvider' is not in available provider names.Available providers: 'AzureExecutionProvider, CPUExecutionProvider'
+  warnings.warn(
+/home/hacker/pi-assistant-env/lib/python3.13/site-packages/webrtcvad.py:1: UserWarning: pkg_resources is deprecated as an API. See https://setuptools.pypa.io/en/latest/pkg_resources.html. The pkg_resources package is slated for removal as early as 2025-11-30. Refrain from using this package or pin to Setuptools<81.
+  import pkg_resources
+Assistant ready. Say the wake word to start.
+Listening for wake word...
+Wake word detected: hey_jarvis_v0.1 (0.69)
+Listening for your command...
+Assistant: I was created by Google.
+[W][17:07:11.088773] pw.conf      | [          conf.c: 1182 try_load_conf()] can't load config client.conf: No such file or directory
+[E][17:07:11.088913] pw.conf      | [          conf.c: 1215 pw_conf_load_conf_for_context()] can't load config client.conf: No such file or directory
+Listening for wake word...
+Wake word detected: hey_jarvis_v0.1 (0.97)
+Listening for your command...
+Assistant: मुझे गूगल ने बनाया है। मैं आपकी किस प्रकार सहायता कर सकता हूँ?
+[W][17:07:29.414413] pw.conf      | [          conf.c: 1182 try_load_conf()] can't load config client.conf: No such file or directory
+[E][17:07:29.414553] pw.conf      | [          conf.c: 1215 pw_conf_load_conf_for_context()] can't load config client.conf: No such file or directory
+Listening for wake word...
+^CStopping assistant.
+(pi-assistant-env) hacker@hacker:~/pi-assistant $ pip install timezonefinder pytz
+Looking in indexes: https://pypi.org/simple, https://www.piwheels.org/simple
+Collecting timezonefinder
+  Downloading timezonefinder-8.2.5.tar.gz (55.0 MB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 55.0/55.0 MB 2.5 MB/s  0:00:22
+  Installing build dependencies ... done
+  Getting requirements to build wheel ... done
+  Preparing metadata (pyproject.toml) ... done
+Collecting pytz
+  Downloading pytz-2026.3.post1-py3-none-any.whl.metadata (22 kB)
+Requirement already satisfied: numpy>=2 in /home/hacker/pi-assistant-env/lib/python3.13/site-packages (from timezonefinder) (2.5.1)
+Collecting h3>=4 (from timezonefinder)
+  Downloading h3-4.5.0-cp313-cp313-manylinux2014_aarch64.manylinux_2_17_aarch64.manylinux_2_28_aarch64.whl.metadata (17 kB)
+Requirement already satisfied: cffi<3,>=1.15.1 in /home/hacker/pi-assistant-env/lib/python3.13/site-packages (from timezonefinder) (2.1.0)
+Requirement already satisfied: flatbuffers>=25.2.10 in /home/hacker/pi-assistant-env/lib/python3.13/site-packages (from timezonefinder) (25.12.19)
+Requirement already satisfied: pycparser in /home/hacker/pi-assistant-env/lib/python3.13/site-packages (from cffi<3,>=1.15.1->timezonefinder) (3.0)
+Downloading pytz-2026.3.post1-py3-none-any.whl (508 kB)
+Downloading h3-4.5.0-cp313-cp313-manylinux2014_aarch64.manylinux_2_17_aarch64.manylinux_2_28_aarch64.whl (1.0 MB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 1.0/1.0 MB 2.6 MB/s  0:00:00
+Building wheels for collected packages: timezonefinder
+  Building wheel for timezonefinder (pyproject.toml) ... done
+  Created wheel for timezonefinder: filename=timezonefinder-8.2.5-cp313-cp313-linux_aarch64.whl size=55012190 sha256=bca922aaf500b8ac22f9021524d447fcee3f48854b8045b9ce6a5c9221cb4e22
+  Stored in directory: /home/hacker/.cache/pip/wheels/fc/9a/62/1dfdb8edf75c1f504b40531531b80d7f72d7b797f444fba64c
+Successfully built timezonefinder
+Installing collected packages: pytz, h3, timezonefinder
+Successfully installed h3-4.5.0 pytz-2026.3.post1 timezonefinder-8.2.5
+(pi-assistant-env) hacker@hacker:~/pi-assistant $ cat > tools.py << 'EOF'
+> import datetime
+= TimezoneFinder()
+
+
+def get_current_time(city: str = "") -> str:
+    """Returns the current date and time. If city is given, returns time in that city;
+    otherwise uses the assistant's default configured location."""
+    lat, lon, name = DEFAULT_LAT, DEFAULT_LON, DEFAULT_CITY_NAME
+
+    if city:
+        geo = requests.get(
+           > import requests
+> import pytz
+> from timezonefinder import TimezoneFinder
+> from config import DEFAULT_LAT, DEFAULT_LON, DEFAULT_CITY_NAME
+>
+> tf = TimezoneFinder()
+>
+>
+> def get_current_time(city: str = "") -> str:
+>     """Returns the current date and time. If city is given, returns time in that city;
+>     otherwise uses the assistant's default configured location."""
+>     lat, lon, name = DEFAULT_LAT, DEFAULT_LON, DEFAULT_CITY_NAME
+>
+>     if city:
+>         geo = requests.get(
+>             "https://geocoding-api.open-meteo.com/v1/search",
+>             params={"name": city, "count": 1},
+>             timeout=5,
+>         ).json()
+>         if geo.get("results"):
+>             r = geo["results"][0]
+>             lat, lon, name = r["latitude"], r["longitude"], r["name"]
+>
+>     tz_name = tf.timezone_at(lat=lat, lng=lon) or "UTC"
+>     now = datetime.datetime.now(pytz.timezone(tz_name))
+>     return f"In {name}, it's currently " + now.strftime("%A, %d %B %Y, %I:%M %p")
+>
+>
+> def get_weather(city: str = "") -> str:
+>     """Returns the current LIVE weather for a given city.
+>     If city is left empty, uses the assistant's default configured location.
+>     """
+>     lat, lon, name = DEFAULT_LAT, DEFAULT_LON, DEFAULT_CITY_NAME
+>
+>     if city:
+>         geo = requests.get(
+>             "https://geocoding-api.open-meteo.com/v1/search",
+>             params={"name": city, "count": 1},
+>             timeout=5,
+>         ).json()
+>         if geo.get("results"):
+>             r = geo["results"][0]
+>             lat, lon, name = r["latitude"], r["longitude"], r["name"]
+>
+>     w = requests.get(
+>         "https://api.open-meteo.com/v1/forecast",
+>         params={"latitude": lat, "longitude": lon, "current_weather": True},
+>         timeout=5,
+>     ).json()
+>
+>     cw = w.get("current_weather", {})
+>     temp = cw.get("temperature")
+>     wind = cw.get("windspeed")
+>     return f"In {name}, it's currently {temp}\u00b0C with wind speed {wind} km/h."
+> EOF
+(pi-assistant-env) hacker@hacker:~/pi-assistant $ cat > listener.py << 'EOF'
+> import wave
+> import subprocess
+> import sounddevice as sd
+> import webrtcvad
+> from config import MIC_DEVICE_INDEX
+>
+>
+> def record_command(out_path: str = "command.wav", max_seconds: int = 8) -> str:
+  elif triggered:
+                silence_run += 1
+                if silence_run > int(500 / FRAME_MS):
+                    break
+
+    with wav>     """Records audio after the wake word until ~0.5s of silence is detected."""
+>     SAMPLE_RATE = 16000
+>     FRAME_MS = 30
+orking, non-blocking."""
+    subprocess.Popen(
+    >     FRAME_SIZE = int(SAMPLE_RATE * FRAME_MS / 1000)
+>     vad = webrtcvad.Vad(2)
+>
+>     frames = []
+>     silence_run = 0
+>     triggered = False
+>     max_frames = int(max_seconds * 1000 / FRAME_MS)
+>
+>     with sd.InputStream(samplerate=SAMPLE_RATE, channels=1, dtype="int16",
+>                          blocksize=FRAME_SIZE, device=MIC_DEVICE_INDEX) as stream:
+>         print("Listening for your command...")
+>         for _ in range(max_frames):
+>             audio, _ = stream.read(FRAME_SIZE)
+>             pcm = audio.tobytes()
+>             is_speech = vad.is_speech(pcm, SAMPLE_RATE)
+>             frames.append(pcm)
+>             if is_speech:
+>                 triggered = True
+>                 silence_run = 0
+>             elif triggered:
+>                 silence_run += 1
+>                 if silence_run > int(500 / FRAME_MS):
+>                     break
+>
+>     with wave.open(out_path, "wb") as wf:
+>         wf.setnchannels(1)
+>         wf.setsampwidth(2)
+>         wf.setframerate(SAMPLE_RATE)
+>         wf.writeframes(b"".join(frames))
+>
+>     play_thinking_sound()
+>     return out_path
+>
+>
+> def play_thinking_sound():
+>     """Plays a short, pleasant chime while Gemini/TTS are working, non-blocking."""
+>     subprocess.Popen(
+>         ["mpv", "--no-terminal", "--really-quiet", "thinking.mp3"],
+>         stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL,
+>     )
+> EOF
+(pi-assistant-env) hacker@hacker:~/pi-assistant $ ffmpeg -y -f lavfi -i "sine=frequency=740:duration=0.12,volume=0.3" -f lavfi -i "sine=frequency=988:duration=0.12,volume=0.3" -filter_complex "[0][1]concat=n=2:v=0:a=1" thinking.mp3
+ffmpeg version 7.1.5-0+deb13u1+rpt1 Copyright (c) 2000-2026 the FFmpeg developers
+  built with gcc 14 (Debian 14.2.0-19)
+  configuration: --prefix=/usr --extra-version=0+deb13u1+rpt1 --toolchain=hardened --incdir=/usr/include/aarch64-linux-gnu --enable-gpl --disable-stripping --disable-libmfx --disable-mmal --disable-omx --enable-gnutls --enable-libaom --enable-libass --enable-libbs2b --enable-libcdio --enable-libcodec2 --enable-libdav1d --enable-libflite --enable-libfontconfig --enable-libfreetype --enable-libfribidi --enable-libglslang --enable-libgme --enable-libgsm --enable-libharfbuzz --enable-libmp3lame --enable-libmysofa --enable-libopenjpeg --enable-libopenmpt --enable-libopus --enable-librubberband --enable-libshine --enable-libsnappy --enable-libsoxr --enable-libspeex --enable-libtheora --enable-libtwolame --enable-libvidstab --enable-libvorbis --enable-libvpx --enable-libwebp --enable-libx265 --enable-libxml2 --enable-libxvid --enable-libzimg --enable-openal --enable-opencl --enable-opengl --disable-sndio --disable-libvpl --libdir=/usr/lib/aarch64-linux-gnu --arch=arm64 --enable-neon --enable-v4l2-request --enable-libudev --enable-epoxy --enable-libdc1394 --enable-libdrm --enable-libiec61883 --enable-vout-drm --enable-chromaprint --enable-frei0r --enable-ladspa --enable-libbluray --enable-libcaca --enable-libdvdnav --enable-libdvdread --enable-libjack --enable-libpulse --enable-librabbitmq --enable-librist --enable-libsrt --enable-libssh --enable-libsvtav1 --enable-libx264 --enable-libzmq --enable-libzvbi --enable-lv2 --enable-sand --enable-sdl2 --enable-libplacebo --enable-librav1e --enable-pocketsphinx --enable-librsvg --enable-libjxl --enable-shared
+  libavutil      59. 39.100 / 59. 39.100
+  libavcodec     61. 19.101 / 61. 19.101
+  libavformat    61.  7.103 / 61.  7.103
+  libavdevice    61.  3.100 / 61.  3.100
+  libavfilter    10.  5.100 / 10.  5.100
+  libswscale      8.  3.100 /  8.  3.100
+  libswresample   5.  3.100 /  5.  3.100
+  libpostproc    58.  3.100 / 58.  3.100
+Input #0, lavfi, from 'sine=frequency=740:duration=0.12,volume=0.3':
+  Duration: N/A, start: 0.000000, bitrate: 1411 kb/s
+  Stream #0:0: Audio: pcm_f32le, 44100 Hz, mono, flt, 1411 kb/s
+Input #1, lavfi, from 'sine=frequency=988:duration=0.12,volume=0.3':
+  Duration: N/A, start: 0.000000, bitrate: 1411 kb/s
+  Stream #1:0: Audio: pcm_f32le, 44100 Hz, mono, flt, 1411 kb/s
+Stream mapping:
+  Stream #0:0 (pcm_f32le) -> concat
+  Stream #1:0 (pcm_f32le) -> concat
+  concat:out:a0 -> Stream #0:0 (libmp3lame)
+Press [q] to stop, [?] for help
+Output #0, mp3, to 'thinking.mp3':
+  Metadata:
+    TSSE            : Lavf61.7.103
+  Stream #0:0: Audio: mp3, 44100 Hz, mono, fltp
+      Metadata:
+        encoder         : Lavc61.19.101 libmp3lame
+[out#0/mp3 @ 0x559e7bc7e0] video:0KiB audio:2KiB subtitle:0KiB other streams:0KiB global headers:0KiB muxing overhead: 9.834639%
+size=       2KiB time=00:00:00.24 bitrate=  84.1kbits/s speed=24.3x
+(pi-assistant-env) hacker@hacker:~/pi-assistant $ cat > main.py << 'EOF'
+> from wakeword import listen_for_wakeword
+> from listener import record_command, quick_speech_check
+> from brain import ask_gemini_with_audio
+> from tts import speak
+>
+>
+> def main():
+>     print("Assistant ready. Say the wake word to start.")
+>     while True:
+>         try:
+>             listen_for_wakeword()
+>
+>             # Check if the user kept talking right after the wake word
+>             already_talking = quick_speech_check()
+>
+>             if not already_talking:
+>                 speak("Yes sir?", out_path="ack.mp3")
+>
+>             audio_path = record_command()
+audio_p>             reply = ask_gemini_with_audio(audio_path)
+>             print("Assistant:", reply)
+>             speak(reply)
+>         except KeyboardInterrupt:
+>             print("Stopping assistant.")
+>             break
+>         except Exception as e:
+>             print("Error:", e)
+>
+>
+> if __name__ == "__main__":
+>     main()
+> EOF
+(pi-assistant-env) hacker@hacker:~/pi-assistant $ cat > listener.py << 'EOF'
+> import wave
+> import subprocess
+> import sounddevice as sd
+> import webrtcvad
+> from config import MIC_DEVICE_INDEX
+>
+> SAMPLE_RATE = 16000
+> FRAME_MS = 30
+r = "command.wav", max_seconds: int = 8) -> str:
+    ""> FRAME_SIZE = int(SAMPLE_RATE * FRAME_MS / 1000)
+000 / FRAME_MS)
+
+    with sd.InputStream(samplerate=SAMPLE_RATE, channels=1, dtype="int16",
+   > vad = webrtcvad.Vad(2)
+>
+>
+> def quick_speech_check(window_seconds: float = 1.2) -> bool:
+>     """Right after the wake word, listens briefly to see if the user kept talking.
+>     Returns True if speech was detected (so we skip the 'Yes sir?' and go straight
+>     to recording), False if they went quiet (so we prompt them)."""
+>     frames_needed = int(window_seconds * 1000 / FRAME_MS)
+>     with sd.InputStream(samplerate=SAMPLE_RATE, channels=1, dtype="int16",
+>                          blocksize=FRAME_SIZE, device=MIC_DEVICE_INDEX) as stream:
+>         for _ in range(frames_needed):
+>             audio, _ = stream.read(FRAME_SIZE)
+>             if vad.is_speech(audio.tobytes(), SAMPLE_RATE):
+>                 return True
+>     return False
+>
+>
+> def record_command(out_path: str = "command.wav", max_seconds: int = 8) -> str:
+>     """Records audio until ~0.5s of silence is detected."""
+>     frames = []
+>     silence_run = 0
+>     triggered = False
+>     max_frames = int(max_seconds * 1000 / FRAME_MS)
+>
+>     with sd.InputStream(samplerate=SAMPLE_RATE, channels=1, dtype="int16",
+>                          blocksize=FRAME_SIZE, device=MIC_DEVICE_INDEX) as stream:
+>         print("Listening for your command...")
+>         for _ in range(max_frames):
+>             audio, _ = stream.read(FRAME_SIZE)
+>             pcm = audio.tobytes()
+>             is_speech = vad.is_speech(pcm, SAMPLE_RATE)
+>             frames.append(pcm)
+>             if is_speech:
+>                 triggered = True
+>                 silence_run = 0
+>             elif triggered:
+>                 silence_run += 1
+>                 if silence_run > int(500 / FRAME_MS):
+>                     break
+>
+>     with wave.open(out_path, "wb") as wf:
+>         wf.setnchannels(1)
+>         wf.setsampwidth(2)
+>         wf.setframerate(SAMPLE_RATE)
+>         wf.writeframes(b"".join(frames))
+>
+>     play_thinking_sound()
+>     return out_path
+>
+>
+> def play_thinking_sound():
+>     """Plays a short, pleasant chime while Gemini/TTS are working, non-blocking."""
+>     subprocess.Popen(
+>         ["mpv", "--no-terminal", "--really-quiet", "thinking.mp3"],
+>         stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL,
+>     )
+> EOF
+(pi-assistant-env) hacker@hacker:~/pi-assistant $ python3 main.py
+2026-08-03 17:10:32.944479367 [W:onnxruntime:Default, device_discovery.cc:285 GetGpuDevices] Failed to detect devices under "/sys/class/drm/card1": device_discovery.cc:94 ReadFileContents Failed to open file: "/sys/class/drm/card1/device/vendor"
+2026-08-03 17:10:32.944617511 [W:onnxruntime:Default, device_discovery.cc:285 GetGpuDevices] Failed to detect devices under "/sys/class/drm/card0": device_discovery.cc:94 ReadFileContents Failed to open file: "/sys/class/drm/card0/device/vendor"
+/home/hacker/pi-assistant-env/lib/python3.13/site-packages/onnxruntime/capi/onnxruntime_inference_collection.py:153: UserWarning: Specified provider 'CUDAExecutionProvider' is not in available provider names.Available providers: 'AzureExecutionProvider, CPUExecutionProvider'
+  warnings.warn(
+/home/hacker/pi-assistant-env/lib/python3.13/site-packages/webrtcvad.py:1: UserWarning: pkg_resources is deprecated as an API. See https://setuptools.pypa.io/en/latest/pkg_resources.html. The pkg_resources package is slated for removal as early as 2025-11-30. Refrain from using this package or pin to Setuptools<81.
+  import pkg_resources
+Assistant ready. Say the wake word to start.
+Listening for wake word...
+Wake word detected: hey_jarvis_v0.1 (0.77)
+Listening for your command...
+Assistant: Sorry, I didn't catch that.
+[W][17:11:04.327554] pw.conf      | [          conf.c: 1182 try_load_conf()] can't load config client.conf: No such file or directory
+[E][17:11:04.327735] pw.conf      | [          conf.c: 1215 pw_conf_load_conf_for_context()] can't load config client.conf: No such file or directory
+Listening for wake word...
+Wake word detected: hey_jarvis_v0.1 (0.95)
+[W][17:11:10.286602] pw.conf      | [          conf.c: 1182 try_load_conf()] can't load config client.conf: No such file or directory
+[E][17:11:10.286742] pw.conf      | [          conf.c: 1215 pw_conf_load_conf_for_context()] can't load config client.conf: No such file or directory
+Listening for your command...
+Assistant: The current time in Hyderabad is 12:41 PM.
+[W][17:11:28.299160] pw.conf      | [          conf.c: 1182 try_load_conf()] can't load config client.conf: No such file or directory
+[E][17:11:28.299295] pw.conf      | [          conf.c: 1215 pw_conf_load_conf_for_context()] can't load config client.conf: No such file or directory
+Listening for wake word...
+Wake word detected: hey_jarvis_v0.1 (0.77)
+Listening for your command...
+Assistant: Sorry, I didn't catch that.
+[W][17:11:36.457544] pw.conf      | [          conf.c: 1182 try_load_conf()] can't load config client.conf: No such file or directory
+[E][17:11:36.457680] pw.conf      | [          conf.c: 1215 pw_conf_load_conf_for_context()] can't load config client.conf: No such file or directory
+Listening for wake word...
+Wake word detected: hey_jarvis_v0.1 (0.97)
+Listening for your command...
+^CStopping assistant.
+(pi-assistant-env) hacker@hacker:~/pi-assistant $ pip install yt-dlp
+Looking in indexes: https://pypi.org/simple, https://www.piwheels.org/simple
+Collecting yt-dlp
+  Downloading yt_dlp-2026.7.4-py3-none-any.whl.metadata (183 kB)
+Downloading yt_dlp-2026.7.4-py3-none-any.whl (3.2 MB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 3.2/3.2 MB 1.3 MB/s  0:00:02
+Installing collected packages: yt-dlp
+Successfully installed yt-dlp-2026.7.4
+(pi-assistant-env) hacker@hacker:~/pi-assistant $ sudo apt install -y python3-vlc
+[sudo] password for hacker:
+Upgrading:
+  libtalloc2  libwbclient0
+
+Installing:
+  python3-vlc
+
+Installing dependencies:
+  fonts-freefont-ttf         libgroupsock30      liblmdb0      libopenmpt-modplug1    libqt5qmlmodels5          libsecret-common     libtheora0            libxcb-composite0    libxcb-xv0             vlc-l10n                   vlc-plugin-visualization
+  libaa1                     libidn12            liblzo2-2     libprotobuf-lite32t64  libqt5quick5              libshout3            libupnp17t64          libxcb-icccm4        libxkbcommon-x11-0     vlc-plugin-access-extra
+  libaribb24-0t64            libinput-bin        libmad0       libproxy-tools         libqt5svg5                libsidplay2          libusageenvironment3  libxcb-image0        qt5-gtk-platformtheme  vlc-plugin-base
+  libbasicusageenvironment2  libinput10          libmd4c0      libproxy1v5            libqt5waylandclient5      libsmbclient0        libvlc-bin            libxcb-keysyms1      qttranslations5-l10n   vlc-plugin-notify
+  libcddb2                   libixml11t64        libmpcdec6    libqt5core5t64         libqt5waylandcompositor5  libspatialaudio0t64  libvlc5               libxcb-render-util0  qtwayland5             vlc-plugin-qt
+  libdvbpsi10                libkate1            libmtdev1t64  libqt5dbus5t64         libqt5widgets5t64         libspeexdsp1         libvlccore9           libxcb-util1         samba-libs             vlc-plugin-samba
+  libevdev2                  libldb2             libncurses6   libqt5gui5t64          libqt5x11extras5          libtag2              libvncclient1         libxcb-xinerama0     vlc                    vlc-plugin-skins2
+  libfaad2                   liblirc-client0t64  libnfs14      libqt5network5t64      libresid-builder0c2a      libtdb1              libwacom-common       libxcb-xinput0       vlc-bin                vlc-plugin-video-output
+  libgpm2                    liblivemedia116     libnotify4    libqt5qml5             libsecret-1-0             libtevent0t64        libwacom9             libxcb-xkb1          vlc-data               vlc-plugin-video-splitter
+
+Suggested packages:
+  gpm  lirc  notification-daemon  qgnomeplatform-qt5  qt5-image-formats-plugins  qt5-qmltooling-plugins  libwacom-bin  vlc-plugin-fluidsynth  vlc-plugin-jack  vlc-plugin-pipewire  vlc-plugin-svg  libdvdcss2
+
+Summary:
+  Upgrading: 2, Installing: 92, Removing: 0, Not Upgrading: 58
+  Download size: 54.3 MB
+  Space needed: 217 MB / 50.7 GB available
+
+Get:1 http://deb.debian.org/debian trixie/main arm64 fonts-freefont-ttf all 20211204+svn4273-2 [5,318 kB]
+Get:2 http://archive.raspberrypi.com/debian trixie/main arm64 libusageenvironment3 arm64 2025.05.24-1 [7,712 B]
+Get:3 http://deb.debian.org/debian trixie/main arm64 libgpm2 arm64 1.20.7-11+b2 [14.7 kB]
+Get:4 http://deb.debian.org/debian trixie/main arm64 libncurses6 arm64 6.5+20250216-2 [96.1 kB]
+Get:5 http://deb.debian.org/debian trixie/main arm64 libaa1 arm64 1.4p5-51.1+b1 [48.0 kB]
+Get:6 http://deb.debian.org/debian trixie/main arm64 libaribb24-0t64 arm64 1.0.3-2.1+b2 [27.7 kB]
+Get:7 http://deb.debian.org/debian trixie/main arm64 libcddb2 arm64 1.3.2-7.1 [46.7 kB]
+Get:8 http://deb.debian.org/debian trixie/main arm64 libdvbpsi10 arm64 1.3.3-1+b2 [46.9 kB]
+Get:9 http://deb.debian.org/debian trixie/main arm64 libevdev2 arm64 1.13.4+dfsg-1 [30.4 kB]
+Get:10 http://deb.debian.org/debian trixie/main arm64 libfaad2 arm64 2.11.2-1 [162 kB]
+Get:11 http://deb.debian.org/debian trixie/main arm64 libidn12 arm64 1.43-1 [47.2 kB]
+Get:12 http://deb.debian.org/debian trixie/main arm64 libwacom-common all 2.14.0-1 [103 kB]
+Get:13 http://deb.debian.org/debian trixie/main arm64 libwacom9 arm64 2.14.0-1 [24.2 kB]
+Get:14 http://deb.debian.org/debian trixie/main arm64 libmtdev1t64 arm64 1.1.7-1 [22.5 kB]
+Get:15 http://deb.debian.org/debian trixie/main arm64 libixml11t64 arm64 1:1.14.20-1+deb13u1 [79.9 kB]
+Get:16 http://deb.debian.org/debian trixie/main arm64 libkate1 arm64 0.4.3-1 [42.8 kB]
+Get:17 http://deb.debian.org/debian trixie/main arm64 liblmdb0 arm64 0.9.31-1+b2 [43.5 kB]
+Get:18 http://deb.debian.org/debian-security trixie-security/main arm64 libtalloc2 arm64 2:2.4.3+samba4.22.10+dfsg-0+deb13u2 [62.3 kB]
+Get:19 http://deb.debian.org/debian-security trixie-security/main arm64 libtdb1 arm64 2:1.4.13+samba4.22.10+dfsg-0+deb13u2 [82.1 kB]
+Get:20 http://deb.debian.org/debian-security trixie-security/main arm64 libtevent0t64 arm64 2:0.16.2+samba4.22.10+dfsg-0+deb13u2 [76.1 kB]
+Get:21 http://deb.debian.org/debian-security trixie-security/main arm64 libldb2 arm64 2:2.11.0+samba4.22.10+dfsg-0+deb13u2 [173 kB]
+Get:22 http://deb.debian.org/debian trixie/main arm64 liblirc-client0t64 arm64 0.10.2-0.10 [30.9 kB]
+Get:23 http://deb.debian.org/debian trixie/main arm64 liblzo2-2 arm64 2.10-3+b1 [49.6 kB]
+Get:24 http://deb.debian.org/debian trixie/main arm64 libmad0 arm64 0.15.1b-11+b1 [66.3 kB]
+Get:25 http://deb.debian.org/debian trixie/main arm64 libmd4c0 arm64 0.5.2-2+b1 [46.1 kB]
+Get:26 http://deb.debian.org/debian trixie/main arm64 libmpcdec6 arm64 2:0.1~r495-3 [31.1 kB]
+Get:27 http://deb.debian.org/debian trixie/main arm64 libnfs14 arm64 5.0.2-1+b2 [102 kB]
+Get:28 http://deb.debian.org/debian trixie/main arm64 libnotify4 arm64 0.8.6-1 [25.8 kB]
+Get:29 http://deb.debian.org/debian trixie/main arm64 libopenmpt-modplug1 arm64 0.8.9.0-openmpt1-2+b3 [20.8 kB]
+Get:30 http://deb.debian.org/debian trixie/main arm64 libprotobuf-lite32t64 arm64 3.21.12-11+deb13u1 [250 kB]
+Get:31 http://deb.debian.org/debian trixie/main arm64 libproxy1v5 arm64 0.5.9-1 [25.4 kB]
+Get:32 http://deb.debian.org/debian trixie/main arm64 libproxy-tools arm64 0.5.9-1 [11.5 kB]
+Get:33 http://deb.debian.org/debian trixie/main arm64 libqt5core5t64 arm64 5.15.15+dfsg-6+deb13u1 [1,739 kB]
+Get:34 http://deb.debian.org/debian trixie/main arm64 libqt5dbus5t64 arm64 5.15.15+dfsg-6+deb13u1 [206 kB]
+Get:35 http://deb.debian.org/debian trixie/main arm64 libqt5network5t64 arm64 5.15.15+dfsg-6+deb13u1 [652 kB]
+Get:36 http://deb.debian.org/debian trixie/main arm64 libxcb-icccm4 arm64 0.4.2-1 [27.2 kB]
+Get:37 http://deb.debian.org/debian trixie/main arm64 libxcb-util1 arm64 0.4.1-1 [23.6 kB]
+Get:38 http://deb.debian.org/debian trixie/main arm64 libxcb-image0 arm64 0.4.0-2+b2 [21.9 kB]
+Get:39 http://deb.debian.org/debian trixie/main arm64 libxcb-keysyms1 arm64 0.4.1-1 [16.8 kB]
+Get:40 http://deb.debian.org/debian trixie/main arm64 libxcb-render-util0 arm64 0.3.10-1 [18.5 kB]
+Get:41 http://deb.debian.org/debian trixie/main arm64 libxcb-xinerama0 arm64 1.17.0-2+b1 [105 kB]
+Get:42 http://deb.debian.org/debian trixie/main arm64 libxcb-xinput0 arm64 1.17.0-2+b1 [130 kB]
+Get:43 http://archive.raspberrypi.com/debian trixie/main arm64 libbasicusageenvironment2 arm64 2025.05.24-1 [19.4 kB]
+Get:44 http://deb.debian.org/debian trixie/main arm64 libxcb-xkb1 arm64 1.17.0-2+b1 [129 kB]
+Get:45 http://deb.debian.org/debian trixie/main arm64 libxkbcommon-x11-0 arm64 1.7.0-2 [15.2 kB]
+Get:46 http://deb.debian.org/debian trixie/main arm64 libqt5gui5t64 arm64 5.15.15+dfsg-6+deb13u1 [3,199 kB]
+Get:47 http://archive.raspberrypi.com/debian trixie/main arm64 libgroupsock30 arm64 2025.05.24-1 [26.9 kB]
+Get:48 http://archive.raspberrypi.com/debian trixie/main arm64 libinput-bin arm64 1.28.1-1+rpt1+deb13u1 [34.3 kB]
+Get:49 http://archive.raspberrypi.com/debian trixie/main arm64 libinput10 arm64 1.28.1-1+rpt1+deb13u1 [166 kB]
+Get:50 http://deb.debian.org/debian trixie/main arm64 libqt5qml5 arm64 5.15.15+dfsg-3 [1,289 kB]
+Get:51 http://deb.debian.org/debian trixie/main arm64 libqt5qmlmodels5 arm64 5.15.15+dfsg-3 [185 kB]
+Get:52 http://deb.debian.org/debian trixie/main arm64 libqt5quick5 arm64 5.15.15+dfsg-3 [1,522 kB]
+Get:53 http://archive.raspberrypi.com/debian trixie/main arm64 liblivemedia116 arm64 2025.05.24-1 [415 kB]
+Get:54 http://deb.debian.org/debian trixie/main arm64 libqt5widgets5t64 arm64 5.15.15+dfsg-6+deb13u1 [2,284 kB]
+Get:55 http://archive.raspberrypi.com/debian trixie/main arm64 libvlccore9 arm64 1:3.0.23-0+deb13u1+rpt2 [611 kB]
+Get:56 http://deb.debian.org/debian trixie/main arm64 libqt5svg5 arm64 5.15.15-2 [128 kB]
+Get:57 http://deb.debian.org/debian trixie/main arm64 libqt5waylandclient5 arm64 5.15.15-3 [363 kB]
+Get:58 http://archive.raspberrypi.com/debian trixie/main arm64 libvlc5 arm64 1:3.0.23-0+deb13u1+rpt2 [158 kB]
+Get:59 http://archive.raspberrypi.com/debian trixie/main arm64 libvlc-bin arm64 1:3.0.23-0+deb13u1+rpt2 [96.8 kB]
+Get:60 http://archive.raspberrypi.com/debian trixie/main arm64 vlc-bin arm64 1:3.0.23-0+deb13u1+rpt2 [144 kB]
+Get:61 http://archive.raspberrypi.com/debian trixie/main arm64 vlc-data all 1:3.0.23-0+deb13u1+rpt2 [474 kB]
+Get:62 http://archive.raspberrypi.com/debian trixie/main arm64 vlc-plugin-base arm64 1:3.0.23-0+deb13u1+rpt2 [5,274 kB]
+Get:63 http://deb.debian.org/debian trixie/main arm64 libqt5waylandcompositor5 arm64 5.15.15-3 [356 kB]
+Get:64 http://deb.debian.org/debian trixie/main arm64 libqt5x11extras5 arm64 5.15.15-2 [10.7 kB]
+Get:65 http://deb.debian.org/debian trixie/main arm64 libresid-builder0c2a arm64 2.1.1-16 [27.5 kB]
+Get:66 http://deb.debian.org/debian trixie/main arm64 libsecret-common all 0.21.7-1 [27.9 kB]
+Get:67 http://deb.debian.org/debian trixie/main arm64 libsecret-1-0 arm64 0.21.7-1 [102 kB]
+Get:68 http://deb.debian.org/debian trixie/main arm64 libtheora0 arm64 1.2.0~alpha1+dfsg-6 [125 kB]
+Get:69 http://deb.debian.org/debian trixie/main arm64 libshout3 arm64 2.4.6-1+b3 [47.7 kB]
+Get:70 http://deb.debian.org/debian trixie/main arm64 libsidplay2 arm64 2.1.1-16 [95.7 kB]
+Get:71 http://deb.debian.org/debian-security trixie-security/main arm64 libwbclient0 arm64 2:4.22.10+dfsg-0+deb13u2 [71.0 kB]
+Get:72 http://deb.debian.org/debian-security trixie-security/main arm64 samba-libs arm64 2:4.22.10+dfsg-0+deb13u2 [5,646 kB]
+Get:73 http://archive.raspberrypi.com/debian trixie/main arm64 vlc-plugin-qt arm64 1:3.0.23-0+deb13u1+rpt2 [1,464 kB]
+Get:74 http://archive.raspberrypi.com/debian trixie/main arm64 vlc-plugin-video-output arm64 1:3.0.23-0+deb13u1+rpt2 [295 kB]
+Get:75 http://archive.raspberrypi.com/debian trixie/main arm64 vlc arm64 1:3.0.23-0+deb13u1+rpt2 [116 kB]
+Get:76 http://archive.raspberrypi.com/debian trixie/main arm64 vlc-l10n all 1:3.0.23-0+deb13u1+rpt2 [14.7 MB]
+Get:77 http://deb.debian.org/debian-security trixie-security/main arm64 libsmbclient0 arm64 2:4.22.10+dfsg-0+deb13u2 [95.4 kB]
+Get:78 http://deb.debian.org/debian trixie/main arm64 libspatialaudio0t64 arm64 0.3.0+git20180730+dfsg1-2.1+b1 [31.0 kB]
+Get:79 http://deb.debian.org/debian trixie/main arm64 libspeexdsp1 arm64 1.2.1-3 [38.1 kB]
+Get:80 http://deb.debian.org/debian trixie/main arm64 libtag2 arm64 2.0.2-2 [310 kB]
+Get:81 http://deb.debian.org/debian trixie/main arm64 libupnp17t64 arm64 1:1.14.20-1+deb13u1 [149 kB]
+Get:82 http://deb.debian.org/debian trixie/main arm64 libvncclient1 arm64 0.9.15+dfsg-1+deb13u2 [192 kB]
+Get:83 http://deb.debian.org/debian trixie/main arm64 libxcb-composite0 arm64 1.17.0-2+b1 [105 kB]
+Get:84 http://deb.debian.org/debian trixie/main arm64 libxcb-xv0 arm64 1.17.0-2+b1 [109 kB]
+Get:85 http://deb.debian.org/debian trixie/main arm64 python3-vlc all 3.0.21203-1 [120 kB]
+Get:86 http://deb.debian.org/debian trixie/main arm64 qt5-gtk-platformtheme arm64 5.15.15+dfsg-6+deb13u1 [124 kB]
+Get:87 http://deb.debian.org/debian trixie/main arm64 qttranslations5-l10n all 5.15.15-2 [1,834 kB]
+Get:88 http://deb.debian.org/debian trixie/main arm64 qtwayland5 arm64 5.15.15-3 [195 kB]
+Get:89 http://archive.raspberrypi.com/debian trixie/main arm64 vlc-plugin-access-extra arm64 1:3.0.23-0+deb13u1+rpt2 [124 kB]
+Get:90 http://archive.raspberrypi.com/debian trixie/main arm64 vlc-plugin-notify arm64 1:3.0.23-0+deb13u1+rpt2 [97.9 kB]
+Get:91 http://archive.raspberrypi.com/debian trixie/main arm64 vlc-plugin-samba arm64 1:3.0.23-0+deb13u1+rpt2 [98.4 kB]
+Get:92 http://archive.raspberrypi.com/debian trixie/main arm64 vlc-plugin-skins2 arm64 1:3.0.23-0+deb13u1+rpt2 [647 kB]
+Get:93 http://archive.raspberrypi.com/debian trixie/main arm64 vlc-plugin-video-splitter arm64 1:3.0.23-0+deb13u1+rpt2 [130 kB]
+Get:94 http://archive.raspberrypi.com/debian trixie/main arm64 vlc-plugin-visualization arm64 1:3.0.23-0+deb13u1+rpt2 [127 kB]
+Fetched 54.3 MB in 19s (2,869 kB/s)
+apt-listchanges: Reading changelogs...
+Extracting templates from packages: 100%
+Selecting previously unselected package fonts-freefont-ttf.
+(Reading database ... 74596 files and directories currently installed.)
+Preparing to unpack .../00-fonts-freefont-ttf_20211204+svn4273-2_all.deb ...
+Unpacking fonts-freefont-ttf (20211204+svn4273-2) ...
+Selecting previously unselected package libgpm2:arm64.
+Preparing to unpack .../01-libgpm2_1.20.7-11+b2_arm64.deb ...
+Unpacking libgpm2:arm64 (1.20.7-11+b2) ...
+Selecting previously unselected package libncurses6:arm64.
+Preparing to unpack .../02-libncurses6_6.5+20250216-2_arm64.deb ...
+Unpacking libncurses6:arm64 (6.5+20250216-2) ...
+Selecting previously unselected package libaa1:arm64.
+Preparing to unpack .../03-libaa1_1.4p5-51.1+b1_arm64.deb ...
+Unpacking libaa1:arm64 (1.4p5-51.1+b1) ...
+Selecting previously unselected package libaribb24-0t64:arm64.
+Preparing to unpack .../04-libaribb24-0t64_1.0.3-2.1+b2_arm64.deb ...
+Unpacking libaribb24-0t64:arm64 (1.0.3-2.1+b2) ...
+Selecting previously unselected package libusageenvironment3:arm64.
+Preparing to unpack .../05-libusageenvironment3_2025.05.24-1_arm64.deb ...
+Unpacking libusageenvironment3:arm64 (2025.05.24-1) ...
+Selecting previously unselected package libbasicusageenvironment2:arm64.
+Preparing to unpack .../06-libbasicusageenvironment2_2025.05.24-1_arm64.deb ...
+Unpacking libbasicusageenvironment2:arm64 (2025.05.24-1) ...
+Selecting previously unselected package libcddb2.
+Preparing to unpack .../07-libcddb2_1.3.2-7.1_arm64.deb ...
+Unpacking libcddb2 (1.3.2-7.1) ...
+Selecting previously unselected package libdvbpsi10:arm64.
+Preparing to unpack .../08-libdvbpsi10_1.3.3-1+b2_arm64.deb ...
+Unpacking libdvbpsi10:arm64 (1.3.3-1+b2) ...
+Selecting previously unselected package libevdev2:arm64.
+Preparing to unpack .../09-libevdev2_1.13.4+dfsg-1_arm64.deb ...
+Unpacking libevdev2:arm64 (1.13.4+dfsg-1) ...
+Selecting previously unselected package libfaad2:arm64.
+Preparing to unpack .../10-libfaad2_2.11.2-1_arm64.deb ...
+Unpacking libfaad2:arm64 (2.11.2-1) ...
+Selecting previously unselected package libgroupsock30:arm64.
+Preparing to unpack .../11-libgroupsock30_2025.05.24-1_arm64.deb ...
+Unpacking libgroupsock30:arm64 (2025.05.24-1) ...
+Selecting previously unselected package libidn12:arm64.
+Preparing to unpack .../12-libidn12_1.43-1_arm64.deb ...
+Unpacking libidn12:arm64 (1.43-1) ...
+Selecting previously unselected package libwacom-common.
+Preparing to unpack .../13-libwacom-common_2.14.0-1_all.deb ...
+Unpacking libwacom-common (2.14.0-1) ...
+Selecting previously unselected package libwacom9:arm64.
+Preparing to unpack .../14-libwacom9_2.14.0-1_arm64.deb ...
+Unpacking libwacom9:arm64 (2.14.0-1) ...
+Selecting previously unselected package libinput-bin.
+Preparing to unpack .../15-libinput-bin_1.28.1-1+rpt1+deb13u1_arm64.deb ...
+Unpacking libinput-bin (1.28.1-1+rpt1+deb13u1) ...
+Selecting previously unselected package libmtdev1t64:arm64.
+Preparing to unpack .../16-libmtdev1t64_1.1.7-1_arm64.deb ...
+Unpacking libmtdev1t64:arm64 (1.1.7-1) ...
+Selecting previously unselected package libinput10:arm64.
+Preparing to unpack .../17-libinput10_1.28.1-1+rpt1+deb13u1_arm64.deb ...
+Unpacking libinput10:arm64 (1.28.1-1+rpt1+deb13u1) ...
+Selecting previously unselected package libixml11t64:arm64.
+Preparing to unpack .../18-libixml11t64_1%3a1.14.20-1+deb13u1_arm64.deb ...
+Unpacking libixml11t64:arm64 (1:1.14.20-1+deb13u1) ...
+Selecting previously unselected package libkate1:arm64.
+Preparing to unpack .../19-libkate1_0.4.3-1_arm64.deb ...
+Unpacking libkate1:arm64 (0.4.3-1) ...
+Selecting previously unselected package liblmdb0:arm64.
+Preparing to unpack .../20-liblmdb0_0.9.31-1+b2_arm64.deb ...
+Unpacking liblmdb0:arm64 (0.9.31-1+b2) ...
+Preparing to unpack .../21-libtalloc2_2%3a2.4.3+samba4.22.10+dfsg-0+deb13u2_arm64.deb ...
+Unpacking libtalloc2:arm64 (2:2.4.3+samba4.22.10+dfsg-0+deb13u2) over (2:2.4.3+samba4.22.8+dfsg-0+deb13u2) ...
+Selecting previously unselected package libtdb1:arm64.
+Preparing to unpack .../22-libtdb1_2%3a1.4.13+samba4.22.10+dfsg-0+deb13u2_arm64.deb ...
+Unpacking libtdb1:arm64 (2:1.4.13+samba4.22.10+dfsg-0+deb13u2) ...
+Selecting previously unselected package libtevent0t64:arm64.
+Preparing to unpack .../23-libtevent0t64_2%3a0.16.2+samba4.22.10+dfsg-0+deb13u2_arm64.deb ...
+Unpacking libtevent0t64:arm64 (2:0.16.2+samba4.22.10+dfsg-0+deb13u2) ...
+Selecting previously unselected package libldb2:arm64.
+Preparing to unpack .../24-libldb2_2%3a2.11.0+samba4.22.10+dfsg-0+deb13u2_arm64.deb ...
+Unpacking libldb2:arm64 (2:2.11.0+samba4.22.10+dfsg-0+deb13u2) ...
+Selecting previously unselected package liblirc-client0t64:arm64.
+Preparing to unpack .../25-liblirc-client0t64_0.10.2-0.10_arm64.deb ...
+Unpacking liblirc-client0t64:arm64 (0.10.2-0.10) ...
+Selecting previously unselected package liblivemedia116:arm64.
+Preparing to unpack .../26-liblivemedia116_2025.05.24-1_arm64.deb ...
+Unpacking liblivemedia116:arm64 (2025.05.24-1) ...
+Selecting previously unselected package liblzo2-2:arm64.
+Preparing to unpack .../27-liblzo2-2_2.10-3+b1_arm64.deb ...
+Unpacking liblzo2-2:arm64 (2.10-3+b1) ...
+Selecting previously unselected package libmad0:arm64.
+Preparing to unpack .../28-libmad0_0.15.1b-11+b1_arm64.deb ...
+Unpacking libmad0:arm64 (0.15.1b-11+b1) ...
+Selecting previously unselected package libmd4c0:arm64.
+Preparing to unpack .../29-libmd4c0_0.5.2-2+b1_arm64.deb ...
+Unpacking libmd4c0:arm64 (0.5.2-2+b1) ...
+Selecting previously unselected package libmpcdec6:arm64.
+Preparing to unpack .../30-libmpcdec6_2%3a0.1~r495-3_arm64.deb ...
+Unpacking libmpcdec6:arm64 (2:0.1~r495-3) ...
+Selecting previously unselected package libnfs14:arm64.
+Preparing to unpack .../31-libnfs14_5.0.2-1+b2_arm64.deb ...
+Unpacking libnfs14:arm64 (5.0.2-1+b2) ...
+Selecting previously unselected package libnotify4:arm64.
+Preparing to unpack .../32-libnotify4_0.8.6-1_arm64.deb ...
+Unpacking libnotify4:arm64 (0.8.6-1) ...
+Selecting previously unselected package libopenmpt-modplug1:arm64.
+Preparing to unpack .../33-libopenmpt-modplug1_0.8.9.0-openmpt1-2+b3_arm64.deb ...
+Unpacking libopenmpt-modplug1:arm64 (0.8.9.0-openmpt1-2+b3) ...
+Selecting previously unselected package libprotobuf-lite32t64:arm64.
+Preparing to unpack .../34-libprotobuf-lite32t64_3.21.12-11+deb13u1_arm64.deb ...
+Unpacking libprotobuf-lite32t64:arm64 (3.21.12-11+deb13u1) ...
+Selecting previously unselected package libproxy1v5:arm64.
+Preparing to unpack .../35-libproxy1v5_0.5.9-1_arm64.deb ...
+Unpacking libproxy1v5:arm64 (0.5.9-1) ...
+Selecting previously unselected package libproxy-tools.
+Preparing to unpack .../36-libproxy-tools_0.5.9-1_arm64.deb ...
+Unpacking libproxy-tools (0.5.9-1) ...
+Selecting previously unselected package libqt5core5t64:arm64.
+Preparing to unpack .../37-libqt5core5t64_5.15.15+dfsg-6+deb13u1_arm64.deb ...
+Unpacking libqt5core5t64:arm64 (5.15.15+dfsg-6+deb13u1) ...
+Selecting previously unselected package libqt5dbus5t64:arm64.
+Preparing to unpack .../38-libqt5dbus5t64_5.15.15+dfsg-6+deb13u1_arm64.deb ...
+Unpacking libqt5dbus5t64:arm64 (5.15.15+dfsg-6+deb13u1) ...
+Selecting previously unselected package libqt5network5t64:arm64.
+Preparing to unpack .../39-libqt5network5t64_5.15.15+dfsg-6+deb13u1_arm64.deb ...
+Unpacking libqt5network5t64:arm64 (5.15.15+dfsg-6+deb13u1) ...
+Selecting previously unselected package libxcb-icccm4:arm64.
+Preparing to unpack .../40-libxcb-icccm4_0.4.2-1_arm64.deb ...
+Unpacking libxcb-icccm4:arm64 (0.4.2-1) ...
+Selecting previously unselected package libxcb-util1:arm64.
+Preparing to unpack .../41-libxcb-util1_0.4.1-1_arm64.deb ...
+Unpacking libxcb-util1:arm64 (0.4.1-1) ...
+Selecting previously unselected package libxcb-image0:arm64.
+Preparing to unpack .../42-libxcb-image0_0.4.0-2+b2_arm64.deb ...
+Unpacking libxcb-image0:arm64 (0.4.0-2+b2) ...
+Selecting previously unselected package libxcb-keysyms1:arm64.
+Preparing to unpack .../43-libxcb-keysyms1_0.4.1-1_arm64.deb ...
+Unpacking libxcb-keysyms1:arm64 (0.4.1-1) ...
+Selecting previously unselected package libxcb-render-util0:arm64.
+Preparing to unpack .../44-libxcb-render-util0_0.3.10-1_arm64.deb ...
+Unpacking libxcb-render-util0:arm64 (0.3.10-1) ...
+Selecting previously unselected package libxcb-xinerama0:arm64.
+Preparing to unpack .../45-libxcb-xinerama0_1.17.0-2+b1_arm64.deb ...
+Unpacking libxcb-xinerama0:arm64 (1.17.0-2+b1) ...
+Selecting previously unselected package libxcb-xinput0:arm64.
+Preparing to unpack .../46-libxcb-xinput0_1.17.0-2+b1_arm64.deb ...
+Unpacking libxcb-xinput0:arm64 (1.17.0-2+b1) ...
+Selecting previously unselected package libxcb-xkb1:arm64.
+Preparing to unpack .../47-libxcb-xkb1_1.17.0-2+b1_arm64.deb ...
+Unpacking libxcb-xkb1:arm64 (1.17.0-2+b1) ...
+Selecting previously unselected package libxkbcommon-x11-0:arm64.
+Preparing to unpack .../48-libxkbcommon-x11-0_1.7.0-2_arm64.deb ...
+Unpacking libxkbcommon-x11-0:arm64 (1.7.0-2) ...
+Selecting previously unselected package libqt5gui5t64:arm64.
+Preparing to unpack .../49-libqt5gui5t64_5.15.15+dfsg-6+deb13u1_arm64.deb ...
+Unpacking libqt5gui5t64:arm64 (5.15.15+dfsg-6+deb13u1) ...
+Selecting previously unselected package libqt5qml5:arm64.
+Preparing to unpack .../50-libqt5qml5_5.15.15+dfsg-3_arm64.deb ...
+Unpacking libqt5qml5:arm64 (5.15.15+dfsg-3) ...
+Selecting previously unselected package libqt5qmlmodels5:arm64.
+Preparing to unpack .../51-libqt5qmlmodels5_5.15.15+dfsg-3_arm64.deb ...
+Unpacking libqt5qmlmodels5:arm64 (5.15.15+dfsg-3) ...
+Selecting previously unselected package libqt5quick5:arm64.
+Preparing to unpack .../52-libqt5quick5_5.15.15+dfsg-3_arm64.deb ...
+Unpacking libqt5quick5:arm64 (5.15.15+dfsg-3) ...
+Selecting previously unselected package libqt5widgets5t64:arm64.
+Preparing to unpack .../53-libqt5widgets5t64_5.15.15+dfsg-6+deb13u1_arm64.deb ...
+Unpacking libqt5widgets5t64:arm64 (5.15.15+dfsg-6+deb13u1) ...
+Selecting previously unselected package libqt5svg5:arm64.
+Preparing to unpack .../54-libqt5svg5_5.15.15-2_arm64.deb ...
+Unpacking libqt5svg5:arm64 (5.15.15-2) ...
+Selecting previously unselected package libqt5waylandclient5:arm64.
+Preparing to unpack .../55-libqt5waylandclient5_5.15.15-3_arm64.deb ...
+Unpacking libqt5waylandclient5:arm64 (5.15.15-3) ...
+Selecting previously unselected package libqt5waylandcompositor5:arm64.
+Preparing to unpack .../56-libqt5waylandcompositor5_5.15.15-3_arm64.deb ...
+Unpacking libqt5waylandcompositor5:arm64 (5.15.15-3) ...
+Selecting previously unselected package libqt5x11extras5:arm64.
+Preparing to unpack .../57-libqt5x11extras5_5.15.15-2_arm64.deb ...
+Unpacking libqt5x11extras5:arm64 (5.15.15-2) ...
+Selecting previously unselected package libresid-builder0c2a:arm64.
+Preparing to unpack .../58-libresid-builder0c2a_2.1.1-16_arm64.deb ...
+Unpacking libresid-builder0c2a:arm64 (2.1.1-16) ...
+Selecting previously unselected package libsecret-common.
+Preparing to unpack .../59-libsecret-common_0.21.7-1_all.deb ...
+Unpacking libsecret-common (0.21.7-1) ...
+Selecting previously unselected package libsecret-1-0:arm64.
+Preparing to unpack .../60-libsecret-1-0_0.21.7-1_arm64.deb ...
+Unpacking libsecret-1-0:arm64 (0.21.7-1) ...
+Selecting previously unselected package libtheora0:arm64.
+Preparing to unpack .../61-libtheora0_1.2.0~alpha1+dfsg-6_arm64.deb ...
+Unpacking libtheora0:arm64 (1.2.0~alpha1+dfsg-6) ...
+Selecting previously unselected package libshout3:arm64.
+Preparing to unpack .../62-libshout3_2.4.6-1+b3_arm64.deb ...
+Unpacking libshout3:arm64 (2.4.6-1+b3) ...
+Selecting previously unselected package libsidplay2:arm64.
+Preparing to unpack .../63-libsidplay2_2.1.1-16_arm64.deb ...
+Unpacking libsidplay2:arm64 (2.1.1-16) ...
+Preparing to unpack .../64-libwbclient0_2%3a4.22.10+dfsg-0+deb13u2_arm64.deb ...
+Unpacking libwbclient0:arm64 (2:4.22.10+dfsg-0+deb13u2) over (2:4.22.8+dfsg-0+deb13u2) ...
+Selecting previously unselected package samba-libs:arm64.
+Preparing to unpack .../65-samba-libs_2%3a4.22.10+dfsg-0+deb13u2_arm64.deb ...
+Unpacking samba-libs:arm64 (2:4.22.10+dfsg-0+deb13u2) ...
+Selecting previously unselected package libsmbclient0:arm64.
+Preparing to unpack .../66-libsmbclient0_2%3a4.22.10+dfsg-0+deb13u2_arm64.deb ...
+Unpacking libsmbclient0:arm64 (2:4.22.10+dfsg-0+deb13u2) ...
+Selecting previously unselected package libspatialaudio0t64:arm64.
+Preparing to unpack .../67-libspatialaudio0t64_0.3.0+git20180730+dfsg1-2.1+b1_arm64.deb ...
+Unpacking libspatialaudio0t64:arm64 (0.3.0+git20180730+dfsg1-2.1+b1) ...
+Selecting previously unselected package libspeexdsp1:arm64.
+Preparing to unpack .../68-libspeexdsp1_1.2.1-3_arm64.deb ...
+Unpacking libspeexdsp1:arm64 (1.2.1-3) ...
+Selecting previously unselected package libtag2:arm64.
+Preparing to unpack .../69-libtag2_2.0.2-2_arm64.deb ...
+Unpacking libtag2:arm64 (2.0.2-2) ...
+Selecting previously unselected package libupnp17t64:arm64.
+Preparing to unpack .../70-libupnp17t64_1%3a1.14.20-1+deb13u1_arm64.deb ...
+Unpacking libupnp17t64:arm64 (1:1.14.20-1+deb13u1) ...
+Selecting previously unselected package libvlccore9:arm64.
+Preparing to unpack .../71-libvlccore9_1%3a3.0.23-0+deb13u1+rpt2_arm64.deb ...
+Unpacking libvlccore9:arm64 (1:3.0.23-0+deb13u1+rpt2) ...
+Selecting previously unselected package libvlc5:arm64.
+Preparing to unpack .../72-libvlc5_1%3a3.0.23-0+deb13u1+rpt2_arm64.deb ...
+Unpacking libvlc5:arm64 (1:3.0.23-0+deb13u1+rpt2) ...
+Selecting previously unselected package libvlc-bin:arm64.
+Preparing to unpack .../73-libvlc-bin_1%3a3.0.23-0+deb13u1+rpt2_arm64.deb ...
+Unpacking libvlc-bin:arm64 (1:3.0.23-0+deb13u1+rpt2) ...
+Selecting previously unselected package libvncclient1:arm64.
+Preparing to unpack .../74-libvncclient1_0.9.15+dfsg-1+deb13u2_arm64.deb ...
+Unpacking libvncclient1:arm64 (0.9.15+dfsg-1+deb13u2) ...
+Selecting previously unselected package libxcb-composite0:arm64.
+Preparing to unpack .../75-libxcb-composite0_1.17.0-2+b1_arm64.deb ...
+Unpacking libxcb-composite0:arm64 (1.17.0-2+b1) ...
+Selecting previously unselected package libxcb-xv0:arm64.
+Preparing to unpack .../76-libxcb-xv0_1.17.0-2+b1_arm64.deb ...
+Unpacking libxcb-xv0:arm64 (1.17.0-2+b1) ...
+Selecting previously unselected package python3-vlc.
+Preparing to unpack .../77-python3-vlc_3.0.21203-1_all.deb ...
+Unpacking python3-vlc (3.0.21203-1) ...
+Selecting previously unselected package qt5-gtk-platformtheme:arm64.
+Preparing to unpack .../78-qt5-gtk-platformtheme_5.15.15+dfsg-6+deb13u1_arm64.deb ...
+Unpacking qt5-gtk-platformtheme:arm64 (5.15.15+dfsg-6+deb13u1) ...
+Selecting previously unselected package qttranslations5-l10n.
+Preparing to unpack .../79-qttranslations5-l10n_5.15.15-2_all.deb ...
+Unpacking qttranslations5-l10n (5.15.15-2) ...
+Selecting previously unselected package qtwayland5:arm64.
+Preparing to unpack .../80-qtwayland5_5.15.15-3_arm64.deb ...
+Unpacking qtwayland5:arm64 (5.15.15-3) ...
+Selecting previously unselected package vlc-bin.
+Preparing to unpack .../81-vlc-bin_1%3a3.0.23-0+deb13u1+rpt2_arm64.deb ...
+Unpacking vlc-bin (1:3.0.23-0+deb13u1+rpt2) ...
+Selecting previously unselected package vlc-data.
+Preparing to unpack .../82-vlc-data_1%3a3.0.23-0+deb13u1+rpt2_all.deb ...
+Unpacking vlc-data (1:3.0.23-0+deb13u1+rpt2) ...
+Selecting previously unselected package vlc-plugin-base:arm64.
+Preparing to unpack .../83-vlc-plugin-base_1%3a3.0.23-0+deb13u1+rpt2_arm64.deb ...
+Unpacking vlc-plugin-base:arm64 (1:3.0.23-0+deb13u1+rpt2) ...
+Selecting previously unselected package vlc-plugin-qt:arm64.
+Selecting previously unselected package vlc-plugin-video-output:arm64.████████████████████████████████████████████████████▏                                                                                                                              ]
+Preparing to unpack .../85-vlc-plugin-video-output_1%3a3.0.23-0+deb13u1+rpt2_arm64.deb ...
+Unpacking vlc-plugin-video-output:arm64 (1:3.0.23-0+deb13u1+rpt2) ...
+Selecting previously unselected package vlc.
+Preparing to unpack .../86-vlc_1%3a3.0.23-0+deb13u1+rpt2_arm64.deb ...
+Unpacking vlc (1:3.0.23-0+deb13u1+rpt2) ...
+Selecting previously unselected package vlc-l10n.███████████████████████████████████████████████████████████████████████████▌                                                                                                                            ]
+Preparing to unpack .../87-vlc-l10n_1%3a3.0.23-0+deb13u1+rpt2_all.deb ...
+Unpacking vlc-l10n (1:3.0.23-0+deb13u1+rpt2) ...
+Selecting previously unselected package vlc-plugin-access-extra:arm64.
+Preparing to unpack .../88-vlc-plugin-access-extra_1%3a3.0.23-0+deb13u1+rpt2_arm64.deb ...
+Unpacking vlc-plugin-access-extra:arm64 (1:3.0.23-0+deb13u1+rpt2) ...
+Selecting previously unselected package vlc-plugin-notify:arm64.███████████████████████████████████████████████████████████████                                                                                                                          ]
+Preparing to unpack .../89-vlc-plugin-notify_1%3a3.0.23-0+deb13u1+rpt2_arm64.deb ...
+Unpacking vlc-plugin-notify:arm64 (1:3.0.23-0+deb13u1+rpt2) ...
+Selecting previously unselected package vlc-plugin-samba:arm64.
+Preparing to unpack .../90-vlc-plugin-samba_1%3a3.0.23-0+deb13u1+rpt2_arm64.deb ...
+Unpacking vlc-plugin-samba:arm64 (1:3.0.23-0+deb13u1+rpt2) ...██████████████████████████████████████████████████████████████████▉                                                                                                                        ]
+Selecting previously unselected package vlc-plugin-skins2:arm64.
+Preparing to unpack .../91-vlc-plugin-skins2_1%3a3.0.23-0+deb13u1+rpt2_arm64.deb ...
+Unpacking vlc-plugin-skins2:arm64 (1:3.0.23-0+deb13u1+rpt2) ...
+Selecting previously unselected package vlc-plugin-video-splitter:arm64.
+Preparing to unpack .../92-vlc-plugin-video-splitter_1%3a3.0.23-0+deb13u1+rpt2_arm64.deb ...
+Unpacking vlc-plugin-video-splitter:arm64 (1:3.0.23-0+deb13u1+rpt2) ...████████████████████████████████████████████████████████████▎                                                                                                                     ]
+Selecting previously unselected package vlc-plugin-visualization:arm64.
+Preparing to unpack .../93-vlc-plugin-visualization_1%3a3.0.23-0+deb13u1+rpt2_arm64.deb ...
+Unpacking vlc-plugin-visualization:arm64 (1:3.0.23-0+deb13u1+rpt2) ...
+Setting up libprotobuf-lite32t64:arm64 (3.21.12-11+deb13u1) ...
+Setting up liblmdb0:arm64 (0.9.31-1+b2) ...██████████████████████████████████████████████████████████████████████████████████████████▊                                                                                                                   ]
+Setting up libproxy1v5:arm64 (0.5.9-1) ...
+Setting up libkate1:arm64 (0.4.3-1) ...█████████████████████████████████████████████████████████████████████████████████████████████████▎                                                                                                                ]
+Setting up libdvbpsi10:arm64 (1.3.3-1+b2) ...
+Setting up libgpm2:arm64 (1.20.7-11+b2) ...███████████████████████████████████████████████████████████████████████████████████████████████▋                                                                                                              ]
+Setting up libxcb-xinput0:arm64 (1.17.0-2+b1) ...███████████████████████████████████████████████████████████████████████████████████████████▌                                                                                                            ]
+Setting up liblirc-client0t64:arm64 (0.10.2-0.10) ...
+Setting up libtag2:arm64 (2.0.2-2) ...████████████████████████████████████████████████████████████████████████████████████████████████████████▉                                                                                                          ]
+Setting up libtdb1:arm64 (2:1.4.13+samba4.22.10+dfsg-0+deb13u2) ...
+Setting up libaribb24-0t64:arm64 (1.0.3-2.1+b2) ...██████████████████████████████████████████████████████████████████████████████████████████████▍                                                                                                       ]
+Setting up libxcb-keysyms1:arm64 (0.4.1-1) ...
+Setting up fonts-freefont-ttf (20211204+svn4273-2) ...█████████████████████████████████████████████████████████████████████████████████████████████▉                                                                                                     ]
+Setting up libxcb-render-util0:arm64 (0.3.10-1) ...
+Setting up liblzo2-2:arm64 (2.10-3+b1) ...███████████████████████████████████████████████████████████████████████████████████████████████████████████▋                                                                                                   ]
+Setting up vlc-l10n (1:3.0.23-0+deb13u1+rpt2) ...
+Setting up libxcb-icccm4:arm64 (0.4.2-1) ...████████████████████████████████████████████████████████████████████████████████████████████████████████████▏                                                                                                ]
+Setting up libusageenvironment3:arm64 (2025.05.24-1) ...
+Setting up libmpcdec6:arm64 (2:0.1~r495-3) ...████████████████████████████████████████████████████████████████████████████████████████████████████████████▋                                                                                              ]
+Setting up libwbclient0:arm64 (2:4.22.10+dfsg-0+deb13u2) ...
+Setting up libnfs14:arm64 (5.0.2-1+b2) ...███████████████████████████████████████████████████████████████████████████████████████████████████████████████████                                                                                            ]
+Setting up libxcb-util1:arm64 (0.4.1-1) ...███████████████████████████████████████████████████████████████████████████████████████████████████████████████████▉                                                                                          ]
+Setting up libxcb-xkb1:arm64 (1.17.0-2+b1) ...
+Setting up libxcb-image0:arm64 (0.4.0-2+b2) ...██████████████████████████████████████████████████████████████████████████████████████████████████████████████████▍                                                                                       ]
+Setting up libtalloc2:arm64 (2:2.4.3+samba4.22.10+dfsg-0+deb13u2) ...
+Setting up libcddb2 (1.3.2-7.1) ...████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████▊                                                                                     ]
+Setting up libvncclient1:arm64 (0.9.15+dfsg-1+deb13u2) ...
+Setting up libbasicusageenvironment2:arm64 (2025.05.24-1) ...█████████████████████████████████████████████████████████████████████████████████████████████████████████▎                                                                                  ]
+Setting up libqt5core5t64:arm64 (5.15.15+dfsg-6+deb13u1) ...
+Setting up libxcb-xinerama0:arm64 (1.17.0-2+b1) ...█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████▋                                                                                ]
+Setting up qttranslations5-l10n (5.15.15-2) ...
+Setting up libnotify4:arm64 (0.8.6-1) ...█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████▌                                                                              ]
+Setting up libresid-builder0c2a:arm64 (2.1.1-16) ...
+Setting up libncurses6:arm64 (6.5+20250216-2) ...████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████                                                                            ]
+Setting up libfaad2:arm64 (2.11.2-1) ...
+Setting up libxkbcommon-x11-0:arm64 (1.7.0-2) ...██████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████▍                                                                         ]
+Setting up libidn12:arm64 (1.43-1) ...
+Setting up libixml11t64:arm64 (1:1.14.20-1+deb13u1) ...██████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████▉                                                                       ]
+Setting up libvlccore9:arm64 (1:3.0.23-0+deb13u1+rpt2) ...█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████▊                                                                     ]
+Setting up libsidplay2:arm64 (2.1.1-16) ...
+Setting up libmad0:arm64 (0.15.1b-11+b1) ...██████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████▏                                                                  ]
+Setting up libxcb-composite0:arm64 (1.17.0-2+b1) ...
+Setting up libmtdev1t64:arm64 (1.1.7-1) ...█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████▋                                                                ]
+Setting up libxcb-xv0:arm64 (1.17.0-2+b1) ...
+Setting up libtheora0:arm64 (1.2.0~alpha1+dfsg-6) ...██████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████                                                              ]
+Setting up libspeexdsp1:arm64 (1.2.1-3) ...
+Setting up libmd4c0:arm64 (0.5.2-2+b1) ...██████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████▉                                                            ]
+Setting up libopenmpt-modplug1:arm64 (0.8.9.0-openmpt1-2+b3) ...
+Setting up libupnp17t64:arm64 (1:1.14.20-1+deb13u1) ...████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████▍                                                         ]
+Setting up libspatialaudio0t64:arm64 (0.3.0+git20180730+dfsg1-2.1+b1) ...
+Setting up libevdev2:arm64 (1.13.4+dfsg-1) ...███████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████▊                                                       ]
+Setting up vlc-data (1:3.0.23-0+deb13u1+rpt2) ...
+Setting up libsecret-common (0.21.7-1) ...██████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████▎                                                    ]
+Setting up libtevent0t64:arm64 (2:0.16.2+samba4.22.10+dfsg-0+deb13u2) ...
+Setting up vlc-plugin-notify:arm64 (1:3.0.23-0+deb13u1+rpt2) ...██████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████▊                                                  ]
+Setting up libproxy-tools (0.5.9-1) ...█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████▌                                                ]
+Setting up libaa1:arm64 (1.4p5-51.1+b1) ...
+Setting up vlc-plugin-video-output:arm64 (1:3.0.23-0+deb13u1+rpt2) ...█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████                                              ]
+Setting up libwacom-common (2.14.0-1) ...
+Setting up libqt5dbus5t64:arm64 (5.15.15+dfsg-6+deb13u1) ...█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████▍                                           ]
+Setting up libwacom9:arm64 (2.14.0-1) ...
+Setting up vlc-plugin-video-splitter:arm64 (1:3.0.23-0+deb13u1+rpt2) ...███████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████▉                                         ]
+Setting up libgroupsock30:arm64 (2025.05.24-1) ...
+Setting up libqt5network5t64:arm64 (5.15.15+dfsg-6+deb13u1) ...██████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████▊                                       ]
+Setting up libvlc5:arm64 (1:3.0.23-0+deb13u1+rpt2) ...
+Setting up libinput-bin (1.28.1-1+rpt1+deb13u1) ...█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████▏                                    ]
+Setting up vlc-plugin-visualization:arm64 (1:3.0.23-0+deb13u1+rpt2) ...
+Setting up vlc-plugin-access-extra:arm64 (1:3.0.23-0+deb13u1+rpt2) ...████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████▋                                  ]
+Setting up libsecret-1-0:arm64 (0.21.7-1) ...
+Setting up libqt5qml5:arm64 (5.15.15+dfsg-3) ...█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████▏                               ]
+Setting up libshout3:arm64 (2.4.6-1+b3) ...███████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████▉                              ]
+Setting up libvlc-bin:arm64 (1:3.0.23-0+deb13u1+rpt2) ...
+Setting up python3-vlc (3.0.21203-1) ...█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████▍                           ]
+Setting up libldb2:arm64 (2:2.11.0+samba4.22.10+dfsg-0+deb13u2) ...
+Setting up libinput10:arm64 (1.28.1-1+rpt1+deb13u1) ...
+Setting up libqt5qmlmodels5:arm64 (5.15.15+dfsg-3) ...██████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████                         ]
+Setting up liblivemedia116:arm64 (2025.05.24-1) ...
+Setting up vlc-bin (1:3.0.23-0+deb13u1+rpt2) ...██████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████▍                      ]
+Setting up samba-libs:arm64 (2:4.22.10+dfsg-0+deb13u2) ...
+Setting up libqt5gui5t64:arm64 (5.15.15+dfsg-6+deb13u1) ...█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████▎                    ]
+Setting up vlc-plugin-base:arm64 (1:3.0.23-0+deb13u1+rpt2) ...
+Setting up libsmbclient0:arm64 (2:4.22.10+dfsg-0+deb13u2) ...█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████▋                  ]
+Setting up libqt5quick5:arm64 (5.15.15+dfsg-3) ...
+Setting up vlc-plugin-samba:arm64 (1:3.0.23-0+deb13u1+rpt2) ...██████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████▏               ]
+Setting up libqt5x11extras5:arm64 (5.15.15-2) ...
+Setting up libqt5widgets5t64:arm64 (5.15.15+dfsg-6+deb13u1) ...████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████▌             ]
+Setting up libqt5svg5:arm64 (5.15.15-2) ...
+Setting up qt5-gtk-platformtheme:arm64 (5.15.15+dfsg-6+deb13u1) ...███████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████           ]
+Setting up libqt5waylandclient5:arm64 (5.15.15-3) ...██████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████▊         ]
+Setting up libqt5waylandcompositor5:arm64 (5.15.15-3) ...
+Setting up vlc-plugin-qt:arm64 (1:3.0.23-0+deb13u1+rpt2) ...██████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████▎      ]
+Setting up vlc-plugin-skins2:arm64 (1:3.0.23-0+deb13u1+rpt2) ...
+Setting up qtwayland5:arm64 (5.15.15-3) ...█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████▋    ]
+Setting up vlc (1:3.0.23-0+deb13u1+rpt2) ...
+Processing triggers for hicolor-icon-theme (0.18-2) ...████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████▏ ]
+Processing triggers for libc-bin (2.41-12+rpt1+deb13u3) ...
+Processing triggers for man-db (2.13.1-1) ...
+Processing triggers for udev (257.13-1~deb13u1) ...
+Processing triggers for fontconfig (2.15.0-2.3) ...
+Processing triggers for libvlc-bin:arm64 (1:3.0.23-0+deb13u1+rpt2) ...
+(pi-assistant-env) hacker@hacker:~/pi-assistant $ sudo apt install -y python3-vlc
+python3-vlc is already the newest version (3.0.21203-1).
+Summary:
+  Upgrading: 0, Installing: 0, Removing: 0, Not Upgrading: 58
+(pi-assistant-env) hacker@hacker:~/pi-assistant $ cat > roku.py << 'EOF'
+> import requests
+> import xml.etree.ElementTree as ET
+> from urllib.parse import quote
+>
+> ROKU_IP = "192.168.0.22"
+{ROKU_URL}/launch/837?{'&'.join(f'{k}={quote(str(v))}' for k, v in params.items())}"> ROKU_URL = f"http://{ROKU_IP}:8060"
+eout=5)
+    root = ET.fromstring(resp.text)
+    apps = [app.text for app in root.findall("app")]
+    re>
+> # Common Roku channel/app IDs (add more as needed)
+> APP_IDS = {
+>     "youtube": "837",
+>     "netflix": "12",
+>     "prime video": "13",
+>     "amazon prime": "13",
+>     "disney plus": "291097",
+>     "hulu": "2285",
+>     "spotify": "22297",
+> }
+>
+>
+> def launch_app(app_name: str) -> str:
+>     """Launches an app on the Roku by name."""
+>     key = app_name.lower().strip()
+>     app_id = APP_IDS.get(key)
+>     if not app_id:
+>         return f"I don't have '{app_name}' saved for your Roku yet."
+>     resp = requests.post(f"{ROKU_URL}/launch/{app_id}", timeout=5)
+>     if resp.status_code == 200:
+>         return f"Opening {app_name} on your TV."
+>     return f"Couldn't open {app_name} on the Roku."
+>
+>
+> def play_on_youtube(query: str) -> str:
+>     """Searches YouTube on the Roku and plays the first matching video."""
+>     # Launch YouTube with a search query and auto-play the top result
+>     params = {
+>         "contentID": "",
+>         "MediaType": "movie",
+>         "search": query,
+>     }
+>     url = f"{ROKU_URL}/launch/837?{'&'.join(f'{k}={quote(str(v))}' for k, v in params.items())}"
+>     resp = requests.post(url, timeout=5)
+>     if resp.status_code == 200:
+>         return f"Searching YouTube for {query} on your TV."
+>     return f"Couldn't start YouTube search for {query}."
+>
+>
+> def get_roku_apps() -> str:
+>     """Lists installed apps on the Roku (for debugging what's available)."""
+>     resp = requests.get(f"{ROKU_URL}/query/apps", timeout=5)
+>     root = ET.fromstring(resp.text)
+>     apps = [app.text for app in root.findall("app")]
+>     return ", ".join(apps)
+> EOF
+(pi-assistant-env) hacker@hacker:~/pi-assistant $ cat > music.py << 'EOF'
+udio through the speaker.
+    Nothing is saved to disk — mpv streams it directly."""
+    try:
+        ydl_opts = {
+            "format": "bestaudio/best",
+            "quiet": True,
+            "noplaylist": True,
+            "default_search": "ytsearch1",
+        }
+        with yt_dlp.YoutubeDL(ydl_op> import subprocess
+> import yt_dlp
+>
+>
+> def play_song(query: str) -> str:
+>     """Searches YouTube for a song and streams just the audio through the speaker.
+>     Nothing is saved to disk — mpv streams it directly."""
+>     try:
+>         ydl_opts = {
+>             "format": "bestaudio/best",
+>             "quiet": True,
+>             "noplaylist": True,
+>             "default_search": "ytsearch1",
+>         }
+>         with yt_dlp.YoutubeDL(ydl_opts) as ydl:
+>             info = ydl.extract_info(query, download=False)
+>             if "entries" in info:
+>                 info = info["entries"][0]
+>             stream_url = info["url"]
+>             title = info.get("title", query)
+>
+>         # Play in the background so the assistant isn't frozen while it plays
+>         subprocess.Popen(
+>             ["mpv", "--no-terminal", "--really-quiet", stream_url],
+>             stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL,
+>         )
+>         return f"Playing {title}."
+>     except Exception as e:
+>         return f"Sorry, I couldn't play that song. ({e})"
+> EOF
+(pi-assistant-env) hacker@hacker:~/pi-assistant $ cat > brain.py << 'EOF'
+rom config import GEMINI_API_KEY, ASSISTANT_NAME
+from tools import get_current_time, get_weather
+from music import play_song
+fro> import speech_recognition as sr
+> from google import genai
+> from google.genai import types
+> from config import GEMINI_API_KEY, ASSISTANT_NAME
+> from tools import get_current_time, get_weather
+> from music import play_song
+> from roku import launch_app, play_on_youtube
+>
+> client = genai.Client(api_key=GEMINI_API_KEY)
+>
+> SYSTEM_PROMPT = f"""You are {ASSISTANT_NAME}, a fast, friendly voice assistant like Alexa.
+> The user speaks Hindi, Urdu, or English, sometimes mixed. ALWAYS reply in the SAME language
+> the user just spoke in. If replying in Hindi, you MUST write in Devanagari script (e.g. नमस्ते),
+T write in Urdu/Nastaliq script
+(e.g. سلام)> never Roman/Hinglish letters. If replying in Urdu, you MUST write in Urdu/Nastaliq script
+> (e.g. سلام), never Roman letters. Keep answers SHORT and conversational (1-3 sentences) since
+> your reply will be spoken out loud.
+>
+> Use tools whenever relevant, never guess live data:
+> - get_current_time / get_weather for time and weather questions.
+> - play_song when the user wants to hear music through the speaker right now (e.g. "play
+>   [song name]", "put on some music").
+> - launch_app when the user wants to open an app on their TV/Roku (e.g. "open Netflix on my TV").
+> - play_on_youtube when the user wants to watch something specific on their TV/Roku screen
+>   (e.g. "play [video/song] on the TV", "show me [x] on the screen")."""
+>
+> recognizer = sr.Recognizer()
+>
+>
+> def transcribe_audio(audio_path: str) -> str:
+>     with sr.AudioFile(audio_path) as source:
+>         audio = recognizer.record(source)
+>
+>     best_text = ""
+>     best_conf = -1.0
+>     for lang in ["en-US", "hi-IN", "ur-PK"]:
+>         try:
+>             result = recognizer.recognize_google(audio, language=lang, show_all=True)
+>             if not result or "alternative" not in result:
+>                 continue
+>             top = result["alternative"][0]
+>             text = top.get("transcript", "")
+0.5)
+  >             conf = top.get("confidence", 0.5)
+>             if text and conf > best_conf:
+>                 best_text = text
+>                 best_conf = conf
+>         except (sr.UnknownValueError, sr.RequestError):
+>             continue
+>     return best_text
+>
+>
+> def ask_gemini_with_audio(audio_path: str) -> str:
+>     user_text = transcribe_audio(audio_path)
+>     if not user_text:
+>         return "Sorry, I didn't catch that."
+>
+>     response = client.models.generate_content(
+>         model="gemini-3.1-flash-lite",
+>         contents=user_text,
+>         config=types.GenerateContentConfig(
+>             system_instruction=SYSTEM_PROMPT,
+>             tools=[get_current_time, get_weather, play_song, launch_app, play_on_youtube],
+F>         ),
+>     )
+>     return response.text
+> EOF
+(pi-assistant-env) hacker@hacker:~/pi-assistant $ python3 main.py
+2026-08-03 17:29:57.862719872 [W:onnxruntime:Default, device_discovery.cc:285 GetGpuDevices] Failed to detect devices under "/sys/class/drm/card1": device_discovery.cc:94 ReadFileContents Failed to open file: "/sys/class/drm/card1/device/vendor"
+2026-08-03 17:29:57.862854426 [W:onnxruntime:Default, device_discovery.cc:285 GetGpuDevices] Failed to detect devices under "/sys/class/drm/card0": device_discovery.cc:94 ReadFileContents Failed to open file: "/sys/class/drm/card0/device/vendor"
+/home/hacker/pi-assistant-env/lib/python3.13/site-packages/onnxruntime/capi/onnxruntime_inference_collection.py:153: UserWarning: Specified provider 'CUDAExecutionProvider' is not in available provider names.Available providers: 'AzureExecutionProvider, CPUExecutionProvider'
+  warnings.warn(
+/home/hacker/pi-assistant-env/lib/python3.13/site-packages/webrtcvad.py:1: UserWarning: pkg_resources is deprecated as an API. See https://setuptools.pypa.io/en/latest/pkg_resources.html. The pkg_resources package is slated for removal as early as 2025-11-30. Refrain from using this package or pin to Setuptools<81.
+  import pkg_resources
+Assistant ready. Say the wake word to start.
+Listening for wake word...
+Wake word detected: hey_jarvis_v0.1 (0.87)
+Listening for your command...
+Assistant: Sorry, I didn't catch that.
+[W][17:30:18.427952] pw.conf      | [          conf.c: 1182 try_load_conf()] can't load config client.conf: No such file or directory
+[E][17:30:18.428090] pw.conf      | [          conf.c: 1215 pw_conf_load_conf_for_context()] can't load config client.conf: No such file or directory
+Listening for wake word...
+Wake word detected: hey_jarvis_v0.1 (0.86)
+Listening for your command...
+Assistant: Sorry, I didn't catch that.
+[W][17:30:25.119365] pw.conf      | [          conf.c: 1182 try_load_conf()] can't load config client.conf: No such file or directory
+[E][17:30:25.119504] pw.conf      | [          conf.c: 1215 pw_conf_load_conf_for_context()] can't load config client.conf: No such file or directory
+Listening for wake word...
+Wake word detected: hey_jarvis_v0.1 (0.96)
+Listening for your command...
+WARNING: [youtube] No supported JavaScript runtime could be found. Only deno is enabled by default; to use another runtime add  --js-runtimes RUNTIME[:PATH]  to your command/config. YouTube extraction without a JS runtime has been deprecated, and some formats may be missing. See  https://github.com/yt-dlp/yt-dlp/wiki/EJS  for details on installing one
+Assistant: جی، میں سورہ رحمن چلا رہا ہوں۔
+[W][17:30:40.633337] pw.conf      | [          conf.c: 1182 try_load_conf()] can't load config client.conf: No such file or directory
+[E][17:30:40.633477] pw.conf      | [          conf.c: 1215 pw_conf_load_conf_for_context()] can't load config client.conf: No such file or directory
+Listening for wake word...
+Wake word detected: hey_jarvis_v0.1 (1.00)
+Listening for your command...
+Assistant: بسم اللہ الرحمن الرحیم۔ بتائیے، میں آپ کی کیا مدد کر سکتا ہوں؟
+[W][17:30:58.028291] pw.conf      | [          conf.c: 1182 try_load_conf()] can't load config client.conf: No such file or directory
+[E][17:30:58.028429] pw.conf      | [          conf.c: 1215 pw_conf_load_conf_for_context()] can't load config client.conf: No such file or directory
+^CStopping assistant.
